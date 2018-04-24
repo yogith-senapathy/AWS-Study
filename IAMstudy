@@ -1,0 +1,31 @@
+•	Permissions are granted through policies
+•	Policies are stored in json format. Policies attached to users are called identity-based-policy, policy associated to resource is called resource-based-policy.
+•	Policies are summarized in three tables: the policy summary, the service summary, and the action summary.
+•	Users or groups can have multiple policies attached to them that grant different permissions.
+•	We cannot attach a resource-based policy to an IAM identity. That means policy created to a resource cannot be used to attach to users.
+•	Trust policies are resource-based policies that are attached to a role that define which principals can assume the role. When you create a role in IAM, the role must have two things: The first is a trust policy that indicates who can assume the role. The second is a permission policy that indicates what they can do with that role.
+•	How to differentiate Identity policy and Resource Policy:
+a)	Resource Policy:
+{
+  "Version": "2012-10-17",
+  "Statement": {
+    "Effect": "Allow",
+    "Principal": {"AWS": "arn:aws:iam::777788889999:user/bob"},
+    "Action": [
+      "s3:PutObject",
+      "s3:PutObjectAcl"
+    ]
+  }
+}
+Resource Policy has Principal key in it, which shows which user/principal was given access to that resource.
+
+b)	Identity Policy:
+{
+  "Version": "2012-10-17",
+  "Statement": {
+    "Effect": "Allow",
+    "Action": "dynamodb:*",
+    "Resource": "arn:aws:dynamodb:us-east-2:123456789012:table/Books"
+  }
+}
+Identity Policy shows, which resource has been attached to policy.
