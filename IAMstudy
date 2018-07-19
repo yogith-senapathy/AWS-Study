@@ -1,31 +1,123 @@
-•	Permissions are granted through policies
-•	Policies are stored in json format. Policies attached to users are called identity-based-policy, policy associated to resource is called resource-based-policy.
-•	Policies are summarized in three tables: the policy summary, the service summary, and the action summary.
-•	Users or groups can have multiple policies attached to them that grant different permissions.
-•	We cannot attach a resource-based policy to an IAM identity. That means policy created to a resource cannot be used to attach to users.
-•	Trust policies are resource-based policies that are attached to a role that define which principals can assume the role. When you create a role in IAM, the role must have two things: The first is a trust policy that indicates who can assume the role. The second is a permission policy that indicates what they can do with that role.
-•	How to differentiate Identity policy and Resource Policy:
-a)	Resource Policy:
-{
-  "Version": "2012-10-17",
-  "Statement": {
-    "Effect": "Allow",
-    "Principal": {"AWS": "arn:aws:iam::777788889999:user/bob"},
-    "Action": [
-      "s3:PutObject",
-      "s3:PutObjectAcl"
-    ]
-  }
-}
-Resource Policy has Principal key in it, which shows which user/principal was given access to that resource.
+Region: It is physical location like North America, Tokyo etc, which contains Availability Zones.
+Availability Zone: Many AZ's under a Region.If one fails other's support. AZ is simply a data center with compute power.
+Edge Location: These are "Cache" points for AWS. Mainly used for cloudfront (CDN (Amazon's Content Delivery Network))
 
-b)	Identity Policy:
-{
-  "Version": "2012-10-17",
-  "Statement": {
-    "Effect": "Allow",
-    "Action": "dynamodb:*",
-    "Resource": "arn:aws:dynamodb:us-east-2:123456789012:table/Books"
-  }
-}
-Identity Policy shows, which resource has been attached to policy.
+
+Security:
+
+.Provides: 
+
+1) IAM (Identity Access management) - manages uses and their level of access.
+   IAM is global . Users/roles/ etc available all across globe
+   IAM is free to use
+MFA can be assigned to users and Roles.
+
+Roles:
+Roles are assigned to AWS resources - example a s3 role can be assigned to ec2 so ec2 can connect to s3 without any username/pwd provided.
+Roles: Secure way to provide access to entities:
+1) Roles for IAM user in another account : If a user from another AWS account wants to access your aws account, then create a Role for that purpose and assign it to that user.
+2) Roles assigned to resoucres (say ec2) : If ec2 has to access s3, then assign a s3 role to ec2. This way ec2 can access s3 without any credentials.
+3) Roles to corporate users: Corporate users sign using LDAP to aws
+4) Roles for aws serivces to act on resources ( example lambda wants to access ses, then create a role with access to lambda, ses and attach that role to lambda function)
+5) Roles can issue access keys which are valid for shorter period of time - secure access
+
+
+Poicies:
+Policies are a document type where we can assign multiple permissions. They cvan be assigned to users/groups/roles.Policy is the top layer to provide permissions.
+Policies are json format. Policies are global (not region specific). Policies can be applied to users,groups and roles.
+Policies are four types: 
+  a) Identity based Policy : To provide your users with permissions to access the AWS resources in their own account
+
+        Identity Policy:
+     {
+         "Version": "2012-10-17",
+     "Statement": {
+         "Effect": "Allow",
+         "Action": "dynamodb:*",
+         "Resource": "arn:aws:dynamodb:us-east-2:123456789012:table/Books"
+       }
+     }
+     Identity Policy shows, which resource has been attached to policy.
+
+    Identity Policies are two types:
+       a) Managed policies: Policies created by AWS/ created by users
+       b) Inline policies: Policies created by users and are embedded to users.
+
+  b) Resource based Policy : popular for granting cross-account access
+
+         Resource Policy:
+               {
+                  "Version": "2012-10-17",
+                  "Statement": {
+                "Effect": "Allow",
+                 "Principal": {"AWS": "arn:aws:iam::777788889999:user/bob"},
+               "Action": [
+              "s3:PutObject",
+               "s3:PutObjectAcl"
+                 ]
+                     }
+                }
+          Resource Policy has Principal key in it, which shows which user/principal was given access to that resource.
+          Resources are always Inline based.
+
+   c) service control policy (SCP) : to apply a permissions boundary to an AWS Organizations organization or organizational unit (OU).
+
+   d) Access control lists (ACLs) – Use ACLs to control what principals can access a resource. ACLs are similar to resource-based policies, although they are the only policy type that does not use the JSON policy document structure.
+
+All requests in policy are first explicit deny. It will then assigns access based on policy json data.
+Policies are summarized in three tables: (when creating policies we follow these steps)
+  a) the policy summary: provides list of services offered.
+  b) the service summary: choose a service 
+  c) the action summary: choose an action to that service.
+
+We cannot attach a resource-based policy to an IAM identity. That means policy created to a resource cannot be used to attach to users.
+Trust policies:  are resource-based policies that are attached to a role that define which principals can assume the role. When you create a role in IAM, the role must have two things: The first is a trust policy that indicates who can assume the role. The second is a permission policy that indicates what they can do with that role.
+
+
+
+Users:
+ARN (Amazon resource Name) will be assigned to users created. They can be used to attach them in json policy files.
+user access is two types 1) console access 2) programatic access
+Access Key ID and Secret Access key are tokens used to authenticate with AWS for automation scripts api,sdk's. These details are shown only once 
+** Access key id and secret can only be used for programatic access and cannot be used for manual login. Similarly username and password can only be used for login and not for prpogramatic.
+access to users can be given as a part of groups or individually assigned to that user.
+root user is primary account with which aws account is created.Root user is the only person who can set billing alarms in AWS using cloudwatch
+
+
+
+AWS managed Job Functions/Policies:
+https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_job-functions.html  :: Different job function policies
+a) Root User (First Principal) : is primary account with which aws account is created. It has all permissions
+b) Power user : Power User Access allows Access to all AWS services except the management of groups and users within IAM.
+c) Administrator : This user has full access and can delegate permissions to every service and resource in AWS.
+d) Billing : This policy grants permissions for managing billing and costs. The permissions include viewing and modifying both budgets and payment methods.
+e) Database Administrator : This user sets up, configures, and maintains databases in the AWS Cloud.
+f) Data Scientist : This user runs Hadoop jobs and queries. The user also accesses and analyzes information for data analytics and business intelligence.
+g) Network Administrator : This policy grants permissions to create and maintain network resources in Amazon EC2, Route 53, Amazon Virtual Private Cloud (VPC), and AWS Direct Connect.
+h) System Administrator : This user sets up and maintains resources for development operations.
+i) Security Auditor : This policy grants permissions to view configuration data for many AWS services and to review their logs.
+j) Support User : This policy grants permissions to create and update AWS Support cases.
+k) View-Only User : This user can view a list of AWS resources and basic metadata in the account across all services. The user cannot read resource content or metadata that goes beyond the quota and list information for resources.
+
+-- learn more for IAM
+
+Notes:
+
+1) AWS Security Token Service (AWS STS) AssumeRole API :: API way of switching role ( example: connect to other aws resource )
+2) AWS Security Token Service (AWS STS) provides temporary credentials to use for a role.
+3) AWS certificate Manager (ACM) to add , create server certifications for https connections.
+
+Others:
+
+Amazon Cognito : If a user is already authenticated with facebook/google/linkedin and that application wants to use AWS then no re-authentication is required. AWS can use authentication provided to social sites and can allow access to AWS.
+  This is achieved by using AWS Cognito.
+
+AWS Organizations: If you manage permissions across multiple accounts, it is more difficult to manage permissions for your users. As a best practice, you can use the AWS Organizations service to help you manage those permissions.
+  AWS Organizations is an account management service that enables you to consolidate multiple AWS accounts into an organization that you create and centrally manage. 
+
+
+CloudTrial: receive log records that include information about those who made requests for resources in your account. This is activated by default when account is created.
+
+AWS Config: Provides historical data of about aws resources, IAM's, Policies groups etc.
+
+CloudWatch : To create billing alarms
