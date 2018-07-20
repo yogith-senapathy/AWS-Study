@@ -1,0 +1,161 @@
+ Simple Storage System: Store data securily
+
+ S3 is object based storage - means we can store data like files,pdf,pictures and vidoes. S3 is not a Block Based Storage - means it cannot store databases, computing systems.
+
+  Files size can be from 0 to 5TB.
+
+ S3 has Buckets where files will be stored. These Buckets are universal and should have unique names because:
+   .S3 buckets are used as domains. As we cannot use the same domain created by others our bucket name should be unique from others.
+
+ Bucket url will be like : https://s3-eu-west-1.amazonaws.com/yogitest
+   here s3 is resource name and yogitest is bucketname
+
+  when a upload to bucket is successful - 200 https code is generated
+
+
+Data Consisteny in S3:
+1) Read and Write consistency for new objects - if we PUT a new file in S3, it will be avilable in same way across globe.
+2) Eventual Consistency for PUTs and DELETEs - if we modify/delete a file in S3, it might some time in replicating that updated information across globe.
+
+
+S3 is a Key-Value Store:
+a) Key : Name of the file/object uploaded
+b) Value : Data of file uploaded. Sequence of bytes.
+c) Version ID : version of data
+d) Metadata : Data about data , like what kind of data and parameters
+e) Subresources:
+   1) ACL (Access Control Lists) : Policy/permissions attached to individual files in Bucket.
+      ** Remeber ACL is not json based.
+   2) Torrent
+
+Basics:
+
+S3 is 99.99% available - means always available
+S3 is 99.99999999999% ( 11 9's) durtable - less likeley to loss data we upoloaded
+Tiered Storage Available : Different storage classes available
+Lifecycle managemnet : Movement of data from one storage class to other depending on time since uploaded.
+Versioning : Versioning of data uploaded , so we can retireve data as per version.
+Encryption : Encrytping data uploaded
+Secure data using Access : IAM and ACL's and Bucket Policies (policies created at bucket level)
+
+
+
+Bucket:
+
+1) Buckets are universal and should have unique names because (name should be 3 to 63 characters, no uppercase and underscore):
+   .S3 buckets are used as domains. As we cannot use the same domain created by others our bucket name should be unique from others.
+
+2) Objects stored in a Bucket will remain only the region of Bucket created, until unless moved to cross region
+
+3) Bucket creation using API : first create client. If client is created normally then bucket can be created in client region or any specified region.
+                            If client created at a specified location, then bucket should only be created in that region.
+
+4) Bucket url will be like : 
+. Virtual hosted url : http://bucket.s3.amazonaws.com
+. Path style url : http://s3.amazonaws.com/bucket
+
+5) If you just want to empty the bucket and not delete it, make sure you remove the lifecycle configuration rule you added to empty the bucket so that any new objects you create in the bucket will remain in the bucket.
+
+6) Encryption:
+Server side encryption can use amaon provided keys (AWS - S3) or KMS
+Data will be encrypted before uploading it to bucket and decrypted during download.
+Encryption with cross Region Replication: 
+a) If source bucket has no encryoption but target bucket has. Then data will be encrypted at target bucket with it's policies.
+b) If source bucket has encryption set, then data at target bucket will also have same encryption as source bucket.
+
+7) Transfer Acceleration: a) Helps speed up upload of data from client to S3 bucket.
+   b) Uses AWS cloudfront edge location concept
+   c) can result in extra charge
+   d) some use cases:
+       a1) when multiple ppl upload data to one bucket from across world
+       a2) upload GB to TB's of data to longer AWS S3 region
+   e) When Transfer acceleration is enabled we get a domain name (new url) to use to and fro data trabnsfer of S3. We use this url to upload data to edge location and then edge location uploads data to S3.
+
+8) Requestor pays bucket : Instead of uploader , downloader of data will pay. Anonymous access is not allowed over here.
+
+
+
+Object:
+
+1) Key : Name of object/file
+2) Valuye : Content in key/object/file which will be in bytes.
+
+3) S3 Storage Classes:
+   Frequently Accessed Data:
+
+   a) S3 standard : For frequently accessed data .99.99% available and 99.999--- durable ( Highly stable and can recover 2 AZ's disasters)
+   b) Reduced Redendency : For frequently accessed data. Stores reproducable data. DONOT USE IT
+
+   Infrequently accessed data:
+
+   c) S3 - IA (Infrequent ACcess) : For data accessed less frequently but requires rapid availability when required
+                                 charged less than s3
+                                 charged for retrvel process
+   d) S3 One Zone - IA : less frequentky accessed data and doesn't require resillence 
+                       less cost than s3 and s3-ia
+
+   e) Glacier: very cheap
+            used for archival data
+           ** we cannot specify Glacier as storage class of an object through UI. It should be done by lifecycle management.
+            Has three archival process:
+            a) Expidited - a bit pricy
+            b) Standard: data retrival will take 3 - 5 hrs
+            c) Bulk
+
+
+Charges:
+   
+There is no retrival fee for S3 standard. Retrival Fee is charged for s3-ia and glacier as per GB retrived.
+
+S3 is charged for :
+a) Storage : per GB
+b) Requests : https requests to s3
+c) Storage Management : Tags and metadata
+d) Data Transfer , Cross region Replication
+e) Transfer Acceleration: Fast , secure data transfer from local to S3. Uses edge locations and cloudfront technology to transfer data from user to main server
+
+
+**** Bucket side and Object side functions:
+Bucket : version, tag,metadata,encryption,requester pay,Transfer accelaration, life cycle policy
+Object: Storage class, tag, metada, encryption
+
+Encryption: Encryption shoudl be done as two types:
+1) Transit (data movement to and from S3) : It can be done using SSL or client side encryption
+2) Rest (while data stored in S3) : It can be done :
+   a) Client Side: We encrypt data in local and then upload
+   b) Server side : Encrypt data in AWS. We can set this at bucket level and also at Object level, so when something uploads it automatically gets encrypted. Three ways of encryption:
+                  1) Server Side Encryption Amazon S3 Managed Keys (SSE - S3) : Data encrypted using keys and MFA by AWS and again those keys are encrypted and rotated. AWS provides keys.
+                  2) Server Side Encryption with KMS (SSE-KMS) : Same as AWS-S3 with additional benefits and costs. Employee keys encrypted, audit logs will be provided. Can use either aws keys or customer keys.
+                  3) Server Side Encryption with customer provided keys (SSE-C) : Customers provide keys and AWS manages encryption.
+
+Versioning : Versioning can be enabled at Bucket level.
+             Once enabled , it cannot be deleted. It can only be suspended.
+             It can increase costs as every version of file will stored as a separate file.
+             Stores all versions of objects even if it is deleted.
+             Integrates with Lifecycle rules
+             Can integrate MFA device with versioning to enable more security for changing version state and deletion of object.
+             All objects will have version ID by default. It will be set to 'null' if versioning is not enabled.
+             If an object is deleted in versioning, it's actually not deleted. The lastest object version is set to a delete marker.
+               - So the older version of object still exists in bucket and can retrieved back. To delete a file delete all versions and delete marker.
+             Non concurrent expiration policy can be set.
+
+Life Cycle Management: Used for better mangement of data. If data upoloaded becomes old/needs to be deleted we can set time line using life cycle management
+  .From standrad you can send to any class
+  .From standard to standard IA and one zone IA:
+    objects less than 128kb cannot be transferred to IA
+    objects must be stored for atleast 30 days in current state before sending to IA
+  . From standrad IA to onze zone: objects must be stored for atleast 30 days in current state before sending to onezone
+  . From any class to Glacier
+  . Glacier to other, onezone IA to IA, IA to standrad are not possible. Any class to Reduced Redundency is also not possible.
+  . Can be used either with/ without versioning. Can be applied to both current and previous versions.
+
+Access:
+1) Access Control List (ACL) : can be given at bucket level or at object level. Resource Bases Policy and not json format
+2) Bucket Policy : These are bucket wide and applied for all objects in a bucket.
+
+
+Notes:
+
+Tag can be made to Bucket and also to individual objects. Tags assigned to Buckets will not be inherited to individual objects
+Access for other AWS accounts can be given either at Bucket/object level using Permissions option
+
