@@ -250,6 +250,11 @@ Notes:
 Tag can be made to Bucket and also to individual objects. Tags assigned to Buckets will not be inherited to individual objects
 Access for other AWS accounts can be given either at Bucket/object level using Permissions option
 Multi part Upload: Uploading of data to S3 is easier if data is being uploaded in parts.
+Query in Place: We can run queries to data stored in S3. Recuces cost and easy
+S3 Select : Resource provided by S3 to run simple queries to retrive required data from S3 objects instead of pulling entire object.
+Amazon Athena : Athena is a service used to analyze data stored in S3 using siple queries.
+                Athena is serverless
+RedShift Spectrum : Service provided by Amazon Redshift to run queries on exabytes of data.
 
 Comparisions:
 
