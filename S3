@@ -116,7 +116,7 @@ e) Transfer Acceleration: Fast , secure data transfer from local to S3. Uses edg
 
 
 **** Bucket side and Object side functions:
-Bucket : version, tag,metadata,encryption,requester pay,Transfer accelaration, life cycle policy
+Bucket : version, tag,metadata,encryption,requester pay,Transfer accelaration, life cycle policy, cross region replication
 Object: Storage class, tag, metada, encryption
 
 Encryption: Encryption shoudl be done as two types:
@@ -153,9 +153,101 @@ Access:
 1) Access Control List (ACL) : can be given at bucket level or at object level. Resource Bases Policy and not json format
 2) Bucket Policy : These are bucket wide and applied for all objects in a bucket.
 
+Cross Region Replication: 
+
+. This is a bucket level feature.
+
+. ***** For cross region replication to work versioning should be enabled on both buckets
+
+. For replication source and destination buckets must be in different AWS regions.
+
+. Replication can be only set from one source bucket to one destination bucket
+
+. Only new or changed objects will be replicated in new bucket and not existing objects. That means if a bucket already have files and then you turn cross region, then those files will NOT be available in replicated bucket.
+  Only new files added to bucket or changes made to existing files will be replicated.
+
+. ** If we delete a file in Source bucket (with version enabled), then that file will be also be deleted in Destination bucket. Remember as this is version enabled, a delete marker is put to file in both buckets.
+    Now if we delete delete marker from Source bucket, it only deletes it in source bucket. Destination bucket will still have delete marker available.
+
+. Delete Markers will be replacted. But Deleting delete markers and deleting versions of file will NOT be replicated.
+
+. ACL Permissions will also be replicated from source to destination
+
+. We can replicate entire S3 bucket or certain objects only by specifying its key.
+
+. Cross region Replication Monitor : Monitor CRR and produce notifications when replication fails. Uses cloudtrial, cloudlog, SNS, SQS, Lambda, Kinesis and DynamoDB
+
+
+Cloud Front and Content Delivery Netwrok (CDN) :
+
+. CDN is a collection of servers (network) that delivers web content to users across world.
+
+. Edge Location : This is the location where content will be cached. This is different from Aws Zone (AZ).
+                  - Edge location caches data for certain specified time period called TTL (Time To Leave). TTL will always be in seconds.24 hrs i default TTL.
+                  - We can also PUT data into edge location. So it not only caches data from other websites,we can also store our own data.
+                  - we can clear cached data from edge locations, but will be charged.
+
+. Origin : Origin of our files in aws (In which resource our files are in aws) . 
+           - ** It can be S3, ec2, load balancer, route 53.
+           - Origin can be AWS resource or any non-aws resource (say github/dropbox)
+           - ***** there can be multiple origins to a distribution and they are identified by their origin ID's
+
+. Distribution : It is the name given to CDN. Collection of edge locations and it is of two types:
+                 - web distribution: distribution for websites
+                 - RTMP : distribution for media content like videos, images.
+
+. ** When a user modified data by PUT/DELETE to distribution. It will first change data at edge location and then update origin.
+
+. ******* Restrict User Access : We can set restrictions on who can access data at CDN.Users should use cloudfront signed url or signed cookies.
+
+. Restrictions can also be applied to countries - like who can access CDn and who cannot.
+
+. We can also set CNAMES - default names to cloudfront url's.
+
+. We can also specify a path in bucket to be made available for CDN instead of complete bucket.
+
+
+** Storage Gateway:
+
+. It is application which connects on-premise (local) software appliance to AWS cloud storage.
+
+. Gateway is a virual appliance which we install in our data center. Then this gateway will upload data from local to aws.
+
+. Four types of Gateways:
+  
+  - File Gateway (NFS) : For storing Flat files in S3 . Files like txt, pdf, doc, png and videos.
+                         Data accessed thorugh NFS gatepoint
+                         As data is in S3, bucket policies, versioning etc etc can be applied
+
+  - Volume Gateway (iSCSI) : This is a block based storage. It means we can upload datacenter, OS, databases to aws cloud. Data backed up as Snapshots and stored as EBS snapshots in AWS
+    - Stored Volumes : All data will be present in local and it will be asynchronously copied to AWS. 1 GB to 16 TB is the data that can be stored.
+    - Cached Volumes : All data will be stored in AWS S3 and leave a recent cache copy in local. 1GB to 32TB is data that can be stored.
+
+  - Tape Gateway (TPL)/ Virtual Tape Library (VTL) : Used for backups and archiving.
+
+Snowball :
+
+. Before Snowball AWS has Import/export where huge data can be stored in local hard devices sent to Amazon for upload to AWS. Basically done because of slow internet.
+
+. Snowball introduced where Amazon sends their own devices for data transfer.
+
+. Snowball can import from S3 and export to S3.
+
+. Three types:
+   - Snowball : Just a storage device
+   - Snowball Edge : Storage device also has compute capabilities. Can run lambda functions as well
+   - Snowmobile : Very very huge amounts of data.
+
+Static website using S3:
+
+. Bucket name and Route 53 domain name shoukd match if we host static website with specific domain name.
+
+. ****website url created by S3 will be in this format:
+  http://BUCKETNAME.s3-website-AWSREGION.amazonaws.com
 
 Notes:
 
 Tag can be made to Bucket and also to individual objects. Tags assigned to Buckets will not be inherited to individual objects
 Access for other AWS accounts can be given either at Bucket/object level using Permissions option
+Multi part Upload: Uploading of data to S3 is easier if data is being uploaded in parts.
 
