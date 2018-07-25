@@ -251,3 +251,12 @@ Tag can be made to Bucket and also to individual objects. Tags assigned to Bucke
 Access for other AWS accounts can be given either at Bucket/object level using Permissions option
 Multi part Upload: Uploading of data to S3 is easier if data is being uploaded in parts.
 
+Comparisions:
+
+Class          Durability     Availability
+S3 standard     99.99999..%    99.99%
+S3 IA           99.9999...%    99.9%
+S3 IA one zone  99.999...%     99.5%
+Glacier         99.999....%    99.99%
+RRS             99.99%         99.99%
+
