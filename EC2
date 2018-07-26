@@ -1,0 +1,185 @@
+
+
+Basics:
+
+. EC2 is Elastic Compute Cloud
+. Service that provides resizable compute capacity
+. Able to genarate VM's (linux,windows) in minutes
+
+EC2 Pricing Options :
+---------------------
+   a) On Demand : pay as per usage (hours/seconds) , no commitments
+                  currently linux as per seconds, windows as per hours
+                    - applications which are in development and testing and studying
+                    - applications with short term loads
+  
+   b) Reserved : 1 or 3 year contract with amazon
+                 provides capacity reservation and less charges than On Demand
+                   - applications with setady/predictable usage
+                   - applications that require reserved capacity
+                   - Three types of reserved Instances:
+                      . Standard : 75% off of On-demand
+                      . Convertible : Reserved instances which can convert their capacity and memory usage
+                      . Scheduled : Reserved instances required for a scheduled time period.
+
+   c) Spot : Bid for price of instance capacity
+             better savings if applications have flexible start and end times
+             ** If a spot instance is terminated by Amazon, we will not be charged for that partial hour.
+                we will be charged for spot instance if we terminate it by oursleves.
+
+   d) Dedicated Hosts : Physical ec2 machines dedicated for our application
+                        reduces costs, can install server software licenses
+                        suitable for oracle, databases etc
+                        useful for licensing requirements which doesn't support multi-tenancy/cloud deployments
+                        can be purchased On-Demand (hourlY)
+                        can be purchased as Reserved ( 70% off of On-Demand)
+
+EC2 Instance Types:
+-------------------
+
+1) General : T , M
+2) Storage : H , I , D
+3) Compute : C
+4) Memory  : X, R, Z
+5) Accelerated Computing : G, P, F
+
+Instance Type    Features                                     Use cases
+
+F                 Accelerated Computing                       Video processing, Reasearch and Analytics
+
+I3                Storage Purpose, High IOPS
+                  Bare metal workloads                        No SQL databases, data warehousing and elastic search
+
+G                 Accelerated Computing, Graphics             3D etc
+
+H1                Storage Purpose, 16 TB of HDD               NFS, Apache Kafka, Big Data
+                  high disk throughput
+
+T2                Low Cost, general purpose                   web sites, web applications, test and dev environments, code repo's and build servers
+
+D2                Storage Purpose, 48 TB of HDD
+                  high disk throughput                        NFS, Mapreduce, Hadoop
+
+R                 Memory Purpose                              DataBases, Big Data, Hadoop clusters
+
+M
+M5,M4             General Purpose, balance compute & n/w      small databases, cache, sharepoint, cluster computing
+
+C                 Computing Purpose,high perform @low price   Databases, video encoding, multi player games
+C5,C4             Require VPC
+
+P                 Accelerated Computing                        Machine learning, Recognitions
+
+X                 Memory Purpose, offers lowest price per gb   Databases, HANA, SAP
+X1e, X1
+
+Z                 Memory Purpose
+
+
+How to Remember EC2 types: (" Fight Dr MCPX")
+
+F
+I
+G
+H
+T
+D
+R
+M
+C
+P
+X
+z
+
+EBS ( Elastic Block Storage ):
+------------------------------
+.It is a block based storage
+.Creates storage volumes and attach it to EC2 instances
+.Can run databases, save files, use as a blcok device
+.EBS volumes are stored in AZ, so if EBS volume gets lost/fails in ec2 it can still be restored from AZ.
+.Root Volume : Volume attached to root of a machine.(like C drive)
+. EBS Volume Types:
+  1) SSD:
+
+     a) General Purpose SSD (GP2):
+        - General usage, balances performance and price
+        - Ratio of 3 IOPS per GB with up to 10,000 IOPS per volume
+        - can burst to 3000 IOPS for long times and for volumes of 334GB
+
+     b) Provisioned IOPS SSD (IO1):
+        - Useful for intense and extreme usage applications
+        - Use for more than 10,000 IOPS
+        - can provision upto 20,000 IOPS per volume
+
+  2) Magnetic:
+
+     c) Throughput Optimized HDD (ST1):
+        - useful for Bigdata, Data warehouses, Log processing
+        - ***** It is not a block storage  ( i.e means it cannot be used as boot volume)
+
+     d) Cold HDD (SC1):
+        - low cost and useful for infrequent access
+        - file server
+        - ***** It is not a block storage  ( i.e means it cannot be used as boot volume)
+
+     e) Magnetic (Standard):
+        - very old
+        - cheapest of all volumes
+        - ** Bootable
+        - used for less workloads enviornment
+
+
+. ****** If we delete an instance, EBS volume attached to that instance will also gets deleted by default. It can be turned off. 
+. We can attach multiple volumes , EBS to an instance.
+. We cannot encrypt root volume by default but we can encrypt other attached volumes in an instance.
+    - we can encrypt root volume in one way, create AMI out of current instance and encrypt over there or use third party tools. But we cannot encrypt during initial creation.
+
+
+Launching Instances:
+--------------------
+. we create a secret key pair at the end of creating instance. This generates public and private key which are required for connecting to instance.
+. Security is configured where we define policies like ssh/http/https/ etc rules
+. ssh ec2-user@IPADDRESS -i .pem
+. Status Checks : Check available to ec2 instance :
+   - System Status Check : check if instance is reachable or not. Check if aws can get network pacgaes or not
+   - Instance Status Check : check if operating system is accepyting traffic or not. If not reboot vm.
+.** Termination Protection - protection to stop terminating an instance. It is disabled by default.
+. For windows users pem file has to be converted to ppk for connection.
+
+
+
+Security Groups:
+----------------
+. It is a virtual firewall to instance
+. This is where we set ssh/http/https/ etc rules to instances. There re two types of rules :
+   - inbound : In traffic : denied by default
+   - outbound : out traffic : allowed by default
+. **** Any rule made to securoty group will applied immediately.
+. **** Security groups are "statefull" - rules added to inbound automatically replicated to outbound
+        - NACL are "stateless"
+. Every rule is blocked by defualt until we allow it.
+. Default rules are same all over globe
+. *****We can attach multiple security groups to an instance.
+. RDP port is 3389, MySQL port is 3306. 
+. We cannot block IP's using security groups, it is done using NACL.
+. we cannot deny any rule, only accept rules.
+
+
+
+
+
+
+AMI (Amazon Machine Images):
+----------------------------
+
+. These are snapshots of virtual images
+
+
+
+
+Notes:
+------
+
+. ****1 subnet = 1 Availability Zone ( i.e 1 az has only 1 subnet )
+
+. ****** If we delete an instance, EBS volume attached to that instance will also gets deleted.
