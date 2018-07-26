@@ -115,12 +115,12 @@ EBS ( Elastic Block Storage ):
 
      c) Throughput Optimized HDD (ST1):
         - useful for Bigdata, Data warehouses, Log processing
-        - ***** It is not a block storage  ( i.e means it cannot be used as boot volume)
+        - ***** It is not a block storage  ( i.e means it cannot be used as root volume)
 
      d) Cold HDD (SC1):
         - low cost and useful for infrequent access
         - file server
-        - ***** It is not a block storage  ( i.e means it cannot be used as boot volume)
+        - ***** It is not a block storage  ( i.e means it cannot be used as root volume)
 
      e) Magnetic (Standard):
         - very old
@@ -130,9 +130,53 @@ EBS ( Elastic Block Storage ):
 
 
 . ****** If we delete an instance, EBS volume attached to that instance will also gets deleted by default. It can be turned off. 
-. We can attach multiple volumes , EBS to an instance.
-. We cannot encrypt root volume by default but we can encrypt other attached volumes in an instance.
+. ** We can attach multiple volumes , EBS to an instance.
+. *** We cannot encrypt root volume by default but we can encrypt other attached volumes in an instance.
     - we can encrypt root volume in one way, create AMI out of current instance and encrypt over there or use third party tools. But we cannot encrypt during initial creation.
+. ******* Both EBS volumes and EC2 instance to which it is attached should be in same Availability Zone.
+. We can change root volume size and type (EB2/IO1/Magnetic) even after creating instance. But remember we cannot delete it from ui of aws.
+. We cannot change volume size of magnetic after it is attached to instance.
+. To use same volume ( volume being assigned to an instance) in another Availability zone :
+   - create a snapshot of volume
+   - create a volume from snapshot ( we can choose other EBS types and AZ while creating volume)
+  AWS Question: to create a same volume in another AZ, then create a snapshot of it and use it to create volume in another AZ.
+  AWS Question: to copy an ec2 from one region to another : create a snapshot, copy snapshot to another region, create image and then trigger ec2
+                                                            create AMI , use AMI to create new instance on different AZ.
+
+
+Snapshots : 
+   - Snapshots reside in S3
+   - Snapshots are copy of volumes at one point
+   - Snapshots are incremental : if a change is made to volume which already has a snapshot and then we copy volume then it will be just a latest change copied to original snapshot stored in S3.
+   - Snapshots of encrypted volumes are encrypted automatically
+
+
+RAID, Volumes and Snapshots:
+----------------------------
+
+RAID : Redundant Array of Independnet Disks
+       - collection of multiple disks and assign it as a single volume to instance.
+       - Different types of RAID's:
+             - RAID 0 : Striped, Good Performance, No Redundency
+             - RAID 1 : Mirrored, Redundency
+             - RAID 5: Good for Reads, Bad for Writes. AWS don't recommened to use this.
+             - RAID 10 : RAID 0 + RAID 1 = Good performance, Redundency, Stripped and Mirriored.
+       - Use case : If a server say Cassandra is not supported in one EBS volume, then we can use RAID to boost performance.
+
+Snapshot of RAID array can be done by:
+. Shutdown ec2 instance and take snapshot (or)
+. Freeze RAID and take snapshot (or)
+. Unmount RAID array
+
+EBS vs Instance Store:
+----------------------
+. Instance store is ephemeral storage.
+. ** We can launch instances using instance storage and attach an extra instance storage during creation. But we cannot attach additional instance storage after creation.
+  Any ways we can attach additional EBS volumes to instance stored ec2.
+. ***** In instance store we cannot stop an instance.
+. ***** In instance stored ec2 if ec2 fails then all data lost but in EBS ec2 if ec2 stops we don't loose data.
+. All AMI's either have EBS/ Instance stored
+. In instance stored volumes, root volume is created from a template in S3.
 
 
 Launching Instances:
@@ -140,7 +184,7 @@ Launching Instances:
 . we create a secret key pair at the end of creating instance. This generates public and private key which are required for connecting to instance.
 . Security is configured where we define policies like ssh/http/https/ etc rules
 . ssh ec2-user@IPADDRESS -i .pem
-. Status Checks : Check available to ec2 instance :
+. ** Status Checks : Check available to ec2 instance :
    - System Status Check : check if instance is reachable or not. Check if aws can get network pacgaes or not
    - Instance Status Check : check if operating system is accepyting traffic or not. If not reboot vm.
 .** Termination Protection - protection to stop terminating an instance. It is disabled by default.
@@ -161,7 +205,7 @@ Security Groups:
 . Default rules are same all over globe
 . *****We can attach multiple security groups to an instance.
 . RDP port is 3389, MySQL port is 3306. 
-. We cannot block IP's using security groups, it is done using NACL.
+. * We cannot block IP's using security groups, it is done using NACL.
 . we cannot deny any rule, only accept rules.
 
 
@@ -175,6 +219,34 @@ AMI (Amazon Machine Images):
 . These are snapshots of virtual images
 
 
+Elastic Load Balancers:
+---------------
+. Load Balancers are of three types:
+
+   - Application Load Balancer:
+          . suited for http and https; Layer 7; Intelligent; route traffic as per application
+   - Network Load Balancer:
+          . suited for tcp traffic, layer 4, Extreme Powerful, can handle millions of requests, static IP
+   - Classic Load Balancer:
+          . can route https/https traffic. Use layer 7 X-Forwarding and Sticky sessions
+          . Can use layer 4 for TCp traffic.
+
+. Load balance error : Error 504 -> When application has issues ELB responds with 504 error.
+
+. X-Forwarded for header: ELB forwards users Public IP address (IPv4) to ec2 using X-forwareders.
+
+. Response Time: time to wait for receiving a response from health check.
+
+. Timeout : amount of time between health checks
+
+. In Load Balancer we get DNS names
+
+. In load balancer we can add multiple ec2 instances ( that's the concept)
+
+. Load Balancer differentiate servers as Inservice or Outofservice.
+
+*** READ FAQ
+
 
 
 Notes:
@@ -183,3 +255,5 @@ Notes:
 . ****1 subnet = 1 Availability Zone ( i.e 1 az has only 1 subnet )
 
 . ****** If we delete an instance, EBS volume attached to that instance will also gets deleted.
+
+. *** Ephemeral Storage : Any storage made out of EBS volume in an instance. This data will be lost if we stop the instance.
