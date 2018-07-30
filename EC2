@@ -248,6 +248,10 @@ Elastic Load Balancers:
 
 . Load Balancer differentiate servers as Inservice or Outofservice.
 
+. ** Elastci Load Balancer (ELB) will only have a DNS name and no IP address. As they don't have IP address, they are supposed to use either CName or Alias Record for Route 53.
+
+. ** AWS charges for using CName and NO charge for Alias Record.
+
 *** READ FAQ
 
 
