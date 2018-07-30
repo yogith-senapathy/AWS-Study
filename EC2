@@ -149,6 +149,7 @@ Snapshots :
    - Snapshots are copy of volumes at one point
    - Snapshots are incremental : if a change is made to volume which already has a snapshot and then we copy volume then it will be just a latest change copied to original snapshot stored in S3.
    - Snapshots of encrypted volumes are encrypted automatically
+   - ***** We can't delete a snapshot of the root device of an EBS volume used by a registered AMI. You must first deregister the AMI before you can delete the snapshot.
 
 
 RAID, Volumes and Snapshots:
@@ -218,6 +219,8 @@ AMI (Amazon Machine Images):
 
 . These are snapshots of virtual images
 
+. AMI's are regional. We can only launch an instance from AMI only from the region it is available.
+
 
 Elastic Load Balancers:
 ---------------
@@ -248,6 +251,114 @@ Elastic Load Balancers:
 *** READ FAQ
 
 
+CloudWatch  for Ec2:
+--------------------
+
+. **** What metrics are available by default for ec2 in cloudwatch:
+    - CPU Utilization
+    - Disk Utilization
+    - Network Utilization
+    - Status checks
+
+. Basic monitoring : 5 minutes , Detailed monitoring : 1 minute
+
+. Activities done in cloudwatch : Create Dashboard, create billing alarm , create events
+
+. Cloudwatch Events : Useful to trigger an aws resource based on event. We configure an event and when that event occurs we can tell what should happen
+                      ( example : if I upload an object to S3, I can ask to run some lambda code )
+
+. Cloudwatch Logs : Provide detailed logs of ec2 instance upto application level. We install a small software in ec2 and that software will provide details to cloudwatch log.
+
+. ******  Cloudwatch is for Logging data.
+          Cloudtrial is for Auditing data.
+
+
+
+BootStrap Scipts and Metadata:
+------------------------------
+
+. ** BootStrap Scripts: Scripts (bash) which we can provide to ec2 instance during creation. EC2 will be created with details provided in bash script.
+
+. ******* Data from ec2 instances:
+    Meta-data: To find metadata of an instance do :
+    User-data :curl http://169.254.169.254/latest/meta-data
+    Dynamic-data : http://169.254.169.254/latest/dynamic/  instance identity document that is generated when the instance is launched
+
+. To get user provided data :  curl http://169.254.169.254/latest/user-data
+
+
+Launch Configurations and Auto Scaling:
+---------------------------------------
+
+. Before we create Auto Scaling group we create Launch Configurations.
+
+. Good practice to assign multiple subnets (AZ's) to Auto Scaling because if one fails others support.
+
+. If we delete the auto scaling group, it will automatically delete all the ec2 instances launched by it.
+
+
+**** EC2 Placement Groups:
+--------------------------
+
+. There are two types of Placement groups:
+
+    - Clustered Placement Groups :  Grouping on instaces in ONE AVAILABILTY ZONE (AZ)
+                                    Low latency,high throughput and for both. Example: Big data, cassandra
+                                    only certain instances can be launched by in this placement group.
+
+    - Spread Placement Groups : Grouping of instance in distinct underlying hardwares. instances should be in different AZ's.
+                                recommended for critical applications.
+
+. ** The name specified to placement groups must be unique with our AWS account.
+
+. AWS recommended homogeneious instances in a placement group.
+
+. We can't merge placement groups.
+
+. We can't import existing ec2 instance into a placement group. To do that create AMI , launch new instance based on that AMI in placement group.
+
+
+Elastic File System (EFS):
+--------------------------
+
+. It is one of the file storage service to EC2 instances and it is block based storage type.
+
+. Simple UI and easy to create.
+
+. In EFS storage is elastic, growth and shrink of size takes places as we add/remove files in storage. So application gets size when it requires.
+
+. Features:
+   - Supports NFS version 4 and can held multiple concurrent NFS connections. EFS can be used on multiple EC2 instances at same point of time.
+   - pay for what you use.
+   - can scale upto petabytes.
+   - ** Data is stored across multiple AZ's , so high durability
+   - Read after write consistency
+
+. We can apply access levels to folders in EFS and it will be universal.
+
+
+
+Lambda:
+-------
+
+. Lambda is serverless.
+
+. One lambda function can trigger another lambda function.
+
+. Lambda supports C, GO, Java, NodeJS, Python.
+
+. ************* Memorize all triggers by lambda Lambda Triggers are : 
+
+        Alexa, Dynamo DB, SNS, SQS, S3, IOT, API Gateway, Cloudfront, cloudwatch (events and logs), Code Commit, cognito sync trigger, Kinesis
+
+. **** A single request invokes a lambda function. Multiple requests invokes multiple lambda functions.
+
+. Lambda is very cheap. Costs are based on 
+                                 - Requests: Free for 1 million and then $ 0.20 per million
+                                 - Duration : Code Run time.
+
+. The maximun threshold for a function to execute is 5 minutes.
+
 
 Notes:
 ------
@@ -257,3 +368,7 @@ Notes:
 . ****** If we delete an instance, EBS volume attached to that instance will also gets deleted.
 
 . *** Ephemeral Storage : Any storage made out of EBS volume in an instance. This data will be lost if we stop the instance.
+
+. ** It is possible to attach IAM roles to running instances.
+
+. ** API GATEWAY CORS
