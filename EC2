@@ -203,7 +203,7 @@ Security Groups:
 . **** Security groups are "statefull" - rules added to inbound automatically replicated to outbound
         - NACL are "stateless"
 . Every rule is blocked by defualt until we allow it.
-. Default rules are same all over globe
+. Default rules are same all over globe but custom rules should be created separately in each Region.
 . *****We can attach multiple security groups to an instance.
 . RDP port is 3389, MySQL port is 3306. 
 . * We cannot block IP's using security groups, it is done using NACL.
