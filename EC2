@@ -372,3 +372,16 @@ Notes:
 . ** It is possible to attach IAM roles to running instances.
 
 . ** API GATEWAY CORS
+
+. ******* serverless options by AWS:
+   - Lambda : computing
+   - API Gateway : API Proxy
+   - S3 : Storage
+   - Dynamo DB : Database
+   - APP Sync : Database
+   - SNS : Messaging
+   - SQS : Messaging
+   - Kinesis : Analytics
+   - Athena : Analytics
+   - Step Function : Orchestration
+   - Developer Tools
