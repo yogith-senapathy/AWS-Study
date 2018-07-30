@@ -252,6 +252,8 @@ Elastic Load Balancers:
 
 . ** AWS charges for using CName and NO charge for Alias Record.
 
+. ** For ELB choose the same region where EC2 instances are created. ELB only shows instances which are created in same region.
+
 *** READ FAQ
 
 
