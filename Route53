@@ -89,3 +89,30 @@ Notes:
   SPF : Sender Policy Framework, verify identity of email sender
   SRV : Four space value : priority, weight, port and domain name
   TXT : Contains one or more strings in   "
+
+. Route53 uses AnyCast network for better performance.
+
+. Can I create multiple hosted zones for the same domain name?  :  YES
+
+. Does Amazon Route 53 also provide website hosting?  : NO
+  website hosting services provided by AWS are : Lightsail, S3, EC2
+
+. Does Amazon Route 53 support wildcard entries? YES
+
+. Can I associate multiple IP addresses with a single record? : YES
+
+. Can I use AWS CloudTrail logs to roll back changes to my hosted zones? NO
+
+. Does Amazon Route 53 support DNSSEC? : Not now
+
+. Does Route 52 support IPv6 : YES
+
+. Does Amazon Route 53 support DNSSEC? : NO
+
+. Can I point my zone apex (example.com versus www.example.com) at my Elastic Load Balancer? :: YES using Alias Record
+
+. Traffic Policy VS Policy Record: Traffic Policy is a set of rules defined to route traffic (json format). In Policy Record creation we use Traffic Policy
+
+. Can I create an Alias record pointing to a DNS name that is managed by a traffic policy? ::: NO
+
+. Private DNS : Create DNS within our VPC , so we don't expose IP
