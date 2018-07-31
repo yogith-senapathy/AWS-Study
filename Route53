@@ -1,0 +1,91 @@
+
+. Route 53 is global
+
+. Route53 : DNS port is on 53 and Route53 is DNS service.
+
+
+
+
+Domain Name Service (DNS):
+--------------------------
+. DNS used to convert friendly domain names to IP address for computers.
+. IP address are of two types : 
+           - IPv4 : 32 bit address , already have 4 bill
+           - IPv6 : 128 bit  or 340 undecillion addresses
+
+. IPv6 CAN be used with AWS services as VPC supports IPv6
+
+. Top level domain names : .com, .uk, .gov
+
+. Domain Registrars : Domain names should be unique, so it will be maintained by some Registrars.
+
+. SOA record (Start of Authority): detials of domain
+
+. Name Server Records (NS) : Used by Top level domian servers to redirect traffic to Content DNS server.
+
+. Address Records (A) : provides IP address of a server.
+
+. ** Elastci Load Balancer (ELB) will only have a DNS name and no IP address
+
+. TTL : Time to Leave
+
+. Canonical Name (CName) : Pointing one dns server to point o another dns server.
+
+. Alias Record : 
+                - Similar to CName
+                - Created by Amazon
+                - useful for 
+                           - Load Balancers ( as they don't have IPv4)
+                           - websites created using S3
+                           - cloudfront distributions
+                           - ***** Alias record can be useful for Zone Apex ( Naked Domains) . i.e domians without any www 
+                           - supports A and AAAA
+
+. ** AWS charges for using CName and NO charge for Alias Record.
+
+
+
+Route53 Routing Policies:
+-------------------------
+
+. Simple :
+          Default Route Policy
+          commonly used of we have only one resource that performs function for domain
+
+. Weighted :
+            serves traffic as per weight ( requirements )
+            can configure Route 53 to send certain amount of traffic to a ELB and certain to another ELB
+
+. Latency :
+           Routes traffic based on lowest latency to end user
+           Route 53 selects ELB based on lowest latency 
+
+. Failover :
+            useful for active/passive (primary/secondary) checkup
+            Route 53 performs healthcheck of ELB's configured and directs traffic based on health of ELB
+
+. Geolocation :
+               Routes traffic to ELB based on Geo location of user
+
+Notes:
+------
+
+. ** Elastci Load Balancer (ELB) will only have a DNS name and no IP address
+
+. ** AWS charges for using CName and NO charge for Alias Record.
+
+. Route 53 can support 50 domain names by default. To increase limit we need to contact AWS.
+
+. Route 53 supports following records:
+  A : IPv4 address
+  AAAA : IPv6 address
+  CAA : specify's who can provide CA's (certificate associates)
+  CNAME : Same format as domain name ( kind of alias)
+  MX : For email server (Priority and domain server)
+  NAPTR : Name Authority Pointer, replace one name with another.
+  NS : Name servers for hosted zone, which is domain name
+  PTR : Same format as domain name
+  SOA : State of Authority, details of doiman
+  SPF : Sender Policy Framework, verify identity of email sender
+  SRV : Four space value : priority, weight, port and domain name
+  TXT : Contains one or more strings in   "
