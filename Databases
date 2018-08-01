@@ -1,0 +1,221 @@
+
+
+. Relational Database : simple , concept of tables : rows and cloumns
+                        In relational databases, we cannot include few and exclude others. All rows and columns must be satisfied in the table.
+                        Examples of relational databases:
+                             - SQL
+                             - Oracle
+                             - MySQL
+                             - Postgre SQL
+                             - AWS Aurora - ( MySQL and Postgre SQL ) - massive performance and good redundancy
+                             - MariaDB
+
+. Non-Relational Database : It consists of:
+                                           Collection (Table)
+                                                - Document (Rows)
+                                                     - Key Value Pairs (Fields)
+                             
+                            Amazon offers NoSQL database as Dynamo DB where data is stored in json format
+
+
+. Data Warehousing : Used for Business Intelligence. Used to pull large amounts of data
+                      SAP, Oracle hyperion, Cognos
+                    AWS Offers "RedShift" as it's data warehouse
+
+. OLTP (Online Transaction Processing) : It is a quey made to get details of a particular item (table,row/column)
+. OLAP (Online Analytics Processing) : Used to pull large amounts of data from Data warehouses.
+
+. Elastic Cache : AWS webservice which offers easy deploy, operate and scale in-memory cache
+                  helps improve web performance by fast pulling of data from cache instead of from huge databases.
+                  This is of two types:
+                     - Memcached : Widely used
+                     - Redis : key- value store
+                               supports sets and lists
+                               supports master/slave and also Multi AZ for redundancy
+
+RDS :
+----------
+
+. Connection String: Username and password value given to connect to database
+
+. AWS RDS end point is a domain url and not a IPv4 address. We use DNS name to connect from other servies such as ec2
+
+. Hostname = RDS endpoint (DNS name)
+
+. *** If an ec2 instance in one security group and RDS in another security group, they won't connect and results in error.
+      To resolve : open 3306 port in RDS security group to security group in which ec2 instace is created.
+
+. Backup's, Multi AZ's and Replicas:
+  --------------------------
+    . Backup's : There are two different types of Backup's
+                 - Automated Backup: 
+                             - allow recover database at any point of time within retention period.
+                             - retention period is usually from 1 to 35 days
+                             - will take a full daily snapshot & store transaction logs
+                             - most recent backedup snapshot will be used during retention
+                             - These are enabled by default
+                             - Snapshots will be stored in S3 and size of S3 will be equal to size of RDS and no additional costs
+                             - During backup Storage I/O may be suspended - results in a bit latency
+
+                  - Data Base Snapshots:
+                              - These are done manually
+                              - ** They are stored even after deletion of original RDS. This is not available in automated backup.
+                                         ( In automated backup, if RDS is deleted then backup snapshots also gets deleted)
+
+        - ** When we restore RDS from either automated/manual back up, the restored one will be a new RDS and will have new domain DNS.
+
+    . Encryption : 
+                - Encryption is available at REST for Oracle, SQL, MySQL, PostgreSQL, MariaDB and Aurora
+                - Encryption done by using KMS (Key managed Service)
+                - Once RDS is encrypted all data stored, backups, snapshots and repllicas will also be encrypted
+                - At present we cannot encrypt already existing DB
+                - To encrypt existing DB --> create snapshot of it --> copy snapshot and encrypt it
+
+
+    . Multi AZ's : 
+                - will create an exact copy of database in another Availability Zone
+                - AWS handles replication of data in both RDS
+                - If one RDS fails/ AZ fails AWS can transfer data to copy of RDS in another availability zone.
+                - ****** Multi AZ's should be used onlly for disaster recovery and not for performance improvement.
+                - ****** For performance improvemnets use "Read Replicas"
+                - Multi AZ is available for oracle, SQL, MySQL, PostgreSQL, MariaDB and Aurora
+                - ** These are synchronous
+
+
+    . Read Replica :
+                - will create a Read-only copy of database
+                - ** This is asynchronous copy of data from RDS/database to replica
+                - This is used for high performance. Read only for heave database workloads
+                - Is available for MySQL, PostgreSQL, MariaDB and Aurora
+                - used for scaling and not for disaster recovery
+                - ** To have Read Replica, we have to enable "Automated Backup"
+                - we can have 5 copies of replica
+                - Each replica has a dns end point ( because it is also a database )
+                - We can create read replica for a replica
+                - we can create Multi AZ for a replica
+                - We can create read replica of multi az databases
+                - Replicas can be promoted to serve as main databases. Then it will never be a replica.
+                - We can enable encryption in read replicas even if main RDA is not encrypted
+
+
+Dynamo DB:
+----------
+. It is a NoSQL database which supports both json format (key, value) and document type data
+
+. useful for mobile, gaming, IOT
+
+. DynamoDB stored on SSD
+
+. Spread across 3 regions
+
+. Consistency :
+     - Eventual Consistency : Gets updated data with in a second . Best for reading
+
+     - Strongly consistency : Immediate update of data across globe
+
+. Pricing :
+     - Write data : $0.0065 for every 10 units
+     - Read data : $0.0065 for every 50 Units . 
+     - Read data is cheaper than write data in dynamodb.
+
+. Reserved Capacity : We can buy capacity from AWS for dynamo db ( just like reserved ec2 instances)
+
+. Metrics : Read Capacity, Write capacity, Thrpttled read and write requests
+
+. Capacity increase : we can increase Read and Write count capacity by UI and there willbe no downtime during this process. Whereas in RDS we will have downtime during capacity increase.
+
+
+Redshift:
+---------
+. It is the datawarehouse service provided by AWS.
+
+. Fast, powerful, supports petabytes of data and cheaper than many datawarehousing services provided in market
+
+. Uses OLAP (Online Analytics processing)
+
+. Datawarehousing is all about adding & reading multiple cloumns of an entity
+
+. Redshift Configuration:
+      - Single Node (160 GB) : initial setup where only one node acts as Redshift database.
+
+      - MultiNode:
+             - Leader Node: Manages client connections and receives queries. Will flush data to multiple Compute Nodes.
+             - Compute Node: stores data and performs queries. We can have upto 128 compute nodes.
+
+. Columnar Data Storage:
+           - Redshift stores data as columns instead of rows
+           - column based are suitable for data warehouseing, analytics ; where queries are made on large data sets
+           - row based is suitable for transaction processing
+           - column data is sequentially stored in Redshift. This results in less I/O & high performance during data reading
+
+. Advanced Compression:
+           - Column data can be compressed easily than row type data
+           - Less space and better compression techniques for column data
+           - Amazon Reshift will automatically detect best compressor for our data
+
+. Massive Parallel Processing (MPP):
+          - Amazon Redshift will distribute queries & loads across all available nodes - so better performance
+          - we can easily add nodes to redshift
+
+. Pricing:
+    - Compute Node pricing : - we will be charged for compute nodes and not for leader nodes. Charge is based on billing hours
+
+    - Backup
+  
+    - Data Transfer - only within a vpc
+
+. Encryption:
+      - At transit : SSL encryption
+      - At rest : AES-256 encryption. Keys can be KMS or HSM
+
+. Availabilty : 
+      - available in only 1 AZ
+      - can create snapshot and store in another AZ
+
+
+Aurora:
+-------
+
+. It is a Relational database and My-SQL compatiable
+
+. very cheap when compared to open sources like oracle
+
+. Better performance
+
+. Scaling :
+    - Storage : Auto scales in 10GB increments
+    - Compute : Manual and will have a small downtime.
+
+    - will have 6 copies of data stored ( 2 per each AZ)
+    - can handle two data losses for writes and three data losses for read
+    - Aurora storage is self healing. Contionusly performs scanning for errors
+
+. Replicas :
+
+    Aurora Replica : can have 15 replicas
+
+    Read Replica : can have 5 Read replicas
+ 
+    ***** If main database fails in Aurora then fail over will be set to replicas (That means high redundancy). Opposite in Read Replicas.
+
+
+Notes:
+------
+
+Server        IOPS          Storage
+
+SQL           1000-32,000   100GB-16TB
+MYSQL         1000-40,000   100GB-16TB
+PostgreSQL    1000-42,000   100GB-16TB
+MariaDB       1000-42,000   100GB-16TB
+Oracle        1000-42,000   100GB-16TB
+
+Relational Databases are :  Oracle, SQL, MySQL, PostgreSQL, MariaDB, Aurora and Redshift (it is datawarehouse but comes under relational concept)
+
+Non-Relational Databases : DynamoDB, Elastic Cache and Neptune
+
+AWS Neptune : Used for "Graph Databases" , highly connected datasets
+
+AWS DMS (DataBase Migration Service) : helps with database migration
+
+Redshift spectrum : feature of redshift we can run queries aganst exabytes of data stored in S3.
