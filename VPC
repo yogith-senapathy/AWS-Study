@@ -1,0 +1,209 @@
+
+
+VPC : Virtual Private Cloud
+
+VPC :
+     .virtual data center in cloud.
+     .allow logical isolation to launch AWS services in a virtual network
+     .have access on IP address range, subnets, route tables and gateways
+     .Eg: can create public facing subnets for webservers and private facing subnets for databases
+     .***** can create VPN connection between corporate datacenter and your vpc
+
+
+VPC Architecture:
+-----------------
+1. We will have a AWS Region
+2. Inside a region , we will create a VPC. This VPC will have an address range as 10.0.0.0/16 (cidr address range)
+3. We can use an Internet Gateway or Virtual private gateway to connect to VPC
+4. From gateways, traffic is sent to "Router"
+5. Router sends traffic to "Route Table", which we configure
+6. Route Table sends data to "Network ACL".
+7. Network ACL will sends traffic to either "Public Subnet" or "Private Subnet"
+8. Subnets have "Security Groups" which will protect our ec2 instances
+
+Imp:
+----
+. ***** Security Groups can span multiple subnets (that means we can create/attach multiple security groups to a subnet)
+                                                     - so security groups can span subnets
+
+. ***** Security Groups cannot span VPC ( that means a security group can only be attached to only one vpc)
+
+. ***** Network ACl cannot span VPC ( that means a Network ACL can only be attached to only one vpc)
+
+. ***** 1 subnet = 1 Availability Zone. That means a subnet (10.0.1.0/24) cannot exists in multiple AZ's
+. AWS provides below IP address:
+     10.0.0.0 - 10.255.255.255 (10/8 prefix)  :: Highest address range
+
+     172.16.0.0 - 172.31.255.255 (172.16/12 prefix)  :: Medium address range
+
+     192.168.0.0 - 192.168.255.255 (192.168/16 prefix) :: smallest address range
+
+. ******** we can only have 1 Internet Gateay for 1 VPC ******
+
+. ** If we create an ec2 instance in a custom VPC which has only Private subnet, then we get only private IP address and don't get public IP address
+
+. ***** Security Groups are "statefull" - if we apply a inbound rule then outbound rule will be automatically set
+        Network ACL's are "stateless" - we need to manually apply both inbound and outbound rules
+
+
+VPC Peering:
+------------
+. ** Allows connecting one VPC to another using Private IP addresses
+
+. Instances behave as they are in same private network
+. VPC peering can be done within our account and outside our account
+
+. *** 1 central VPC peers with 4 others. It cannot be a transitive peering
+      That means if VPC A is peered with VPC B and VPC C, then only VPC A can connect with VPC B and VPC C. 
+      VPC B cannot connect with VPC C and VPC C cannot connect with VPC B. To have this happen , there need to be a peer between VPC B and VPC C.
+
+VPC Creation:
+-------------
+
+. For creating VPC we provide a name and IPv4 CIDR block
+
+. *** When we create a vpc , we get a Route Table, Network ACL and Security Group created by default
+
+. After creating VPC, we create subnet:
+     - subnet name
+     - vpc
+     - AZ
+     - IPv4 block
+
+. ***** When we create a subnet we always get 5 IP address less from availabilty range because : https://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Subnets.html#VPC_Sizing
+  - The first four IP addresses and the last IP address in each subnet CIDR block are not available for you to use, and cannot be assigned to an instance
+
+    10.0.0.0: Network address.
+
+    10.0.0.1: Reserved by AWS for the VPC router.
+
+    10.0.0.2: Reserved by DNS.
+
+    10.0.0.3: Reserved by AWS for future use.
+
+    10.0.0.255: Network broadcast address. We do not support broadcast in a VPC, therefore we reserve this address.
+
+. ******** A subnet can be associated to only one Network ACL *********
+
+. After vpc and subnet creation, we now create Internet Gateway ( a passage to internet) and attach it to our vpc
+
+. **** We cannot attach multiple internet gateways to a vpc. A vpc will have only 1 gateway.
+
+. Coming to Route table, our default route table will have all subnets we create under that vpc.
+
+. Because of this reason we have to create a new route table.
+
+. create a new route table and assign internet gateway to it and also assign subnet to it
+
+. we have to create a new security group in vpc to be used for
+
+. From lab, public subnet is created when route table is attached with Internet gateway and subnet . This subnet addition is giving public access.
+
+
+Network ACL:
+------------
+. ***** Network ACl cannot span VPC ( that means a Network ACL can only be attached to only one vpc)
+
+. ***** Network ACL's are "stateless" - we need to manually apply both inbound and outbound rules
+
+. ******** A subnet can be associated to only one Network ACL *********
+
+. ***** when we create a Network ACL, by default all access will be DENY. We need to provide access.
+
+. ** Rules are evaluated with number . Eg: 99 will be excuted before 100
+
+. We can block IP address using Network ACL's.
+
+. Ephemeral ports can be used for outbound policies.
+
+. We need to associate subnets to NACL.If we don't assign subnets will get assigned to default NACL. 
+
+
+
+NAT Instances and NAT Gateway:
+------------------------------
+. NAT Instances and NAT gateways are used to provide internet connection to instances created in private subnet
+
+. NAT Instances:
+    - It is an ec2 instance 
+    - ******* This instance must be created under same vpc where we want to provide internet connection to our private instance and this instance must be under "Public" subnet.
+    - ******* Disable source and destination check in NAT instance. This is because any ec2 instance will perform dource & destination check for any traffic sending/receiving.
+              In NAT instance must be able to send/receive traffic when source/dest is not itself. Hence disable
+    - After creating NAT instance --> Go to VPC --> Go to Route tables --> Select the default Route table for vpc and add public internet access as NAT instance as target.
+    - This makes instances instances created in private subnet use NAT instance as a service to connect to internet.
+
+. We have two Gateways:
+    - NAT Gateway -> operates on IPv4
+    - Egress -> operates on IPv6
+
+. NAT Gateway:
+      - ******* Always select "Public Subnet" under VPC for creating NAT Gateway
+      - create an elastic IP address
+      - After creating NAT Gateway --> Go to VPC --> Go to Route tables --> Select the default Route table for vpc and add public internet access as NAT Gateway as target.
+      - This makes instances instances created in private subnet use NAT Gateway as a service to connect to internet.
+      - ***** Create NAT Gateways in multiple Availability Zones
+      - AWS manages all softwares/patching for NAT Gateway
+
+      - Public IP address: choose elastic IP during creation
+      - Private IP address: Automatically selected from subnet's IP range
+      - Security Groups: cannot be associated
+      - Port Forwarding: Not supported
+      - Bastion Servers: Not supported
+
+NAT vs Bastion:
+---------------
+. NAT is used to provide instances in private network and internet access.
+. Bastion is used to connect to instances in private network using ssh or RDP (Remote desktop connection)
+. Bastions are used for secure administrative tasks only. Bastions are placed in Public subnets and connect to private subnets via private IP
+. For Bastion HA, have multiple Bastions in different AZs – at least 2 public subnets. Auto scaling in multiple AZ, route 53 doing health checks
+
+
+Application Load Balancer and VPC:
+----------------------------------
+
+. ****** When creating an Application Load Balancer we need to provide atleast two subnets under our VPC for durabilty (1 subnet = 1 AZ)
+
+. ****** We can only choose Public subnets for load balancer when we create a internet facing load balancer.
+
+. ****** We can only choose Private subnets for load balancer when we create a internal load balancer.
+
+
+
+VPC Flow Logs:
+--------------
+. It is a feature where we can capture IP address going to & from our VPC and store this data in cloud watch logs.
+. VPC Flow Logs can be created at three levels:
+      - VPC
+      - Subnet
+      - Network Interface
+. We need to create a log group in cloudwatch to have it to attach to vpc flow logs
+. We cannot attach flowlogs to vpc's that are peered with your vpc, unless that vpc is in same aws account
+. we cannot tag a flow log
+. We cannot change configuration of flow log after it is created.
+. Not all traffic is monitored:
+      - ec2 metadata traffic : 169.254.169.254 is not monitored
+      - Amazon DNS traffic is not monitored
+      - Traffic to licensing, DHCP and traffic to reserved IP address will not be monitored.
+
+
+VPC Endpoints:
+--------------
+
+. A instance in private network has to connect to S3 . This can be done using NAT Gateway, but it requires multi connection between instance to gateway and gateway to S3.
+
+. Other way of providing connectivity is through "VPC Endpoint"
+
+. Will first create a Role for enabling ec2 connection to S3, so we don't use passwords. Attach that role to instance in private network.
+
+. Will create a AWS Endpoint and add S3 as endpoint and attach our vpc.
+
+. Endpoints are of two types:
+
+     - Interface : It is an Elastic Network Interface (ENI) that serves as entry point for traffic
+
+     - Gateway : serves as target for end point in route table
+
+Notes:
+------
+. Security Groups acts like a firewall at instance level, whereas Network ACL provides additional layer of security at subnet level.
+. 5 vpc's are allowd by default in a region.
