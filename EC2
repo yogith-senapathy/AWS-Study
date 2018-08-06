@@ -254,6 +254,8 @@ Elastic Load Balancers:
 
 . ** For ELB choose the same region where EC2 instances are created. ELB only shows instances which are created in same region.
 
+. **** Your load balancer routes requests to the targets in this target group using the protocol and port that you specify, and performs health checks on the targets using these health check settings. Note that each target group can be associated with only one load balancer.
+
 *** READ FAQ
 
 
