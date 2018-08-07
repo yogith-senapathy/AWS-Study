@@ -51,7 +51,7 @@ VPC Peering:
 . ** Allows connecting one VPC to another using Private IP addresses
 
 . Instances behave as they are in same private network
-. VPC peering can be done within our account and outside our account
+. ** VPC peering can be done within our account and outside our account with in one single region
 
 . *** 1 central VPC peers with 4 others. It cannot be a transitive peering
       That means if VPC A is peered with VPC B and VPC C, then only VPC A can connect with VPC B and VPC C. 
