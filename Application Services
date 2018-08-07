@@ -52,7 +52,7 @@ SWF Simple Workflow Service:
 . SWF Domain can isolate Tasks, Workers and their execution
 . SWF is json format data
 . SWF workflow can be for 1 year and time will be measured in seconds.
-. SWF Actors are : Workers, Deciders and Activity workers.
+. SWF Actors are : Workflow starters, Deciders and Activity workers.
 
 SWF                            SQS
 Task oriented                  Message oriented
