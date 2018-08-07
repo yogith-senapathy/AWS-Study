@@ -1,0 +1,122 @@
+. IT architecture can scale as :
+  - scalling vertically: increaseing size of resource say ec2
+
+  - scalling horizontally: increase in number of resources.
+
+
+ - stateless applications:app which performs multiple steps in acheiving goal and no need of storing previous steps data
+how to distribute load to servers: 
+
+   - push model : use elastic load balancer. or Route 53
+   - pull model : SQS and Kinesis
+
+Stateless applications: App's that require to store previous state information
+
+Stateful components: Databases are stateful
+
+Session Affinity: Allocating a server to a session for better performance, prevemt loss of data
+
+How to achieve session affinity:
+
+  - for http/s traffic use ELB sticky sessions: ELB tries to use same node for application
+  - another option DNS
+
+Distributed Processing: For processing large amounts of data, cut down to smaller pieces and process them.
+
+How to implement distributed processing:
+
+ - Elastic map reduce: run hadoop workloads on multiple ec2's
+
+ - kineses (data will be shared to shards and multiple ec2's/lambda's can process that) 
+
+Bootstrapping: starting instances with predefined scripts
+
+Golden Images: A snapshot of a particular state of a resource.
+               better than bootstrapping
+               items that don't change can follow golden images and items that change frequently can follow bootstrapping
+
+Hybrid model: Using combination of bootstrapping and golden images
+              elastic beanstalk is an example. we upload code and beanstalk provides system requirements to run our code.
+
+
+Infrastructure as Code:
+
+   - cloudformation: template based json/yaml
+
+How to implement service discovery:  use ELB as it has unique DNS name and multiple ec2's are under that domain.
+
+Search:
+
+ - Amazon Cloud Search  : Requires little configuration. AWS handles number of partions and replicas
+
+ - Amazon Elastic Search Service (ES) : offers open source API and more control. Not only a search engine but can also be a analysis platform.
+
+Replication:
+ - synchronous
+ - asynchronous
+ - quorum : combination of sync and async
+
+***** Decoupling : SQS  : do not have dependencies so if one state fails/loose all others will fail.
+
+AWS STS security token service : temporary access tokens with validation period.
+AWS Organizations: helps monitor access/policies across multiple aws accounts
+Amazon Guard Duty: Threat detection service
+Amazon Inspector : Programmatic way to find defects in security
+
+AWS Direct Connect: Connect directly from local data center to aws
+AWS WAF : Web Application Firewall
+
+AWS Step Functions: Logical flow of applications
+
+AWS Security has 4 pillars:
+
+1) data protection : s3, ec2, ebs
+2) privilage management : IAM, MFA
+3) Infrastructure protection: VPC
+4) Detective controls: Cloudtrial, cloudwatch
+
+AWS Reliability has 3 pillars:
+
+1) Foundation
+2) Change management
+3) Failure management
+
+
+----------------
+
+Well Architectured Framework:
+----------------------------
+Five pillars are:
+
+1) Security:
+
+    Data protection
+    Privilege management
+    Infrastructure protection
+    Detective controls
+
+2) Reliability
+
+     Foundations
+     Change Management
+     Failure Management
+
+3) Performance Efficiency
+
+     Compute
+     Storage
+     Database
+     Space-time trade off
+
+4) Cost Optimization
+
+      Match supply and demand
+      Cost effective resources
+      Expenditure awareness
+      Optimizing over time
+
+5) Operational Excellence
+
+       Prepare
+       Operate
+       Responses
