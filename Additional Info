@@ -1,0 +1,119 @@
+
+
+. Kinesis: stream huge amounts of data . data like IOT , social media and process them.
+
+. Processing of data:
+     - Redshift for Business Intelligence
+     - Elastic Map Reduce for Big Data Processing. We can ssh to elastic map reduce
+
+
+. SWF workers are : workflow starters, deciders and actual workers
+  ---------------
+. AWS Organizations: Manage multiple aws accounts across organization.It has two feature sets:
+  ----------------- - consolidating billing : There will be a "Paying Account" and multiple aws accounts are linked to it. So we will have one single bill which shows details of bills in multiple accounts.
+                                                - Pyaing account is only for bill payment, don't use it for regular activities.
+                      - all features
+
+  ***** Cloud Trail is per aws account and enabled per region. But we can aggregate logs by input all multi account logs to a S3 bucket in billing account
+
+. Cross Account Access: If a developer in developer aws account wants to access production aws account:
+  --------------------
+       : In production account : Create IAM Cross Account Access Roles and attach a policy to that role to switch between aws accounts
+       : In developer account : create user/group and attach an "Inline Policy" to "Assume Role"
+
+.Tags:
+      - key value pairs
+      - metadata
+
+. Resource Groups: Groups different aws resources based on the tags attached to them.
+  ---------------
+. Direct Connect: Used to establish connection between our local network to AWS
+  --------------     - for urgent needs use VPN
+                     - Direct Connect needs huge time to setup connection as it is a hardware installation.
+
+. Security Token Service (STS): Grants users temporary access & credentials to use aws resources:
+  ----------------------------
+     - Federation: users in organization can access aws using SAML
+                   single sign on
+     - Federation on Mobile: AWS Cognito for facebook, google etc where users can use facebook cred's to use aws
+     - Cross Account Access: Temporary access is provided to switch accounts
+
+     Key Terms:
+       - Federation : Active Directory, SAML
+       - Identity Broker: allows to take identity from point A and join it to point B
+       - Identity Store: Active Directory, facebook, google etc
+       - Identities: A user of a service like Facebook
+
+    ** STS token can be valid between 1 to 36 hours
+
+     **** STS sends 4 data:  access key id, secret access key , token and duration
+
+   how we login using LDAP: 1) user access a portal 
+                            2) portal sends request to Identity Broker
+                            3) Identity Broker checks credentials with LDAP directory
+                            4) Identity Broker contacts STS for temporary credentials and sends these cred's to portal
+                            5) These temp cred's are used to login to aws.
+
+Active Directory Login:
+    . We use a portal to sign in
+    . It first checks cred's with LDAP
+    . If matches generates a STS
+
+Workspaces: Workspaces are VDI. Replacement of desktops with cloud computers to do regular activities. (just like citrix receiver)
+----------  workspaces are persistent
+            all data in D drive is backed every 12 hrs
+            don't need to login to aws to access workspaces
+
+ECS Elastic Container Service: Manage, scale docker containers in AWS
+-----------------------------  ECR : Elastic Container Registry where we can store docker images
+ 
+   ECS Task: A task definition is required to run docker containers in ecs. It is json format.
+             we define image name, cpu, ports, CMD, variables, volumes, users
+
+   ECS Services: allows to run & maintain minimum number of ecs tasks defined in ecs cluster. If a task fails, ecs service will launch another instance of task.
+
+   ECS Cluster: grouping of containers that can take tasks on. Clusters are region specific.
+
+   ECS Scheduler: Service and custom . Schedule to run tasks/containers
+
+   Fargate: AWS Fargate is a compute engine for Amazon ECS and EKS* that allows you to run containers without having to manage servers or clusters.
+
+Different Types of casting (Route 53 helpful):
+----------------------------------------------
+1) Unicast : 1 to 1
+2) Broadcaast : 1 to many (if all nodes are in same subnet)
+3) Multicast : 1/many to many -- can cross subnet, nodes has to register to multicast
+4) Anycast: many to few -- same network in multiple spots and use shortest path
+
+
+Elastic Map Reduce (EMR):
+-------------------------
+. analyze huge amounts of data like hadoop, big data
+. we upload data to S3 and there is a ec2's cluster which will analyze data for us. 
+. Analyzed data will be send to S3.
+. * As it has ec2's involved, we can ssh to them
+. We can configure multiple clusters to process data from S3.
+. AWS manages security groups for EMR.
+
+
+AWS Config:
+-----------
+. Monitors and audits configuration changes made to aws resources
+
+AWS OpsWorks: Orchestration service that uses chef
+------------   - key words : chef, recipe, cook books
+
+AWS Cloudwatch:  logs, data about aws resoucres. like elb health check.
+--------------- 
+
+AWS Cloudtrail: For auditing purposes. history of account activities and actions taken
+--------------
+
+AWS Trusted Advisor: Advices on best practices
+-------------------
+
+AWS Elastic BeanStalk: we upload code and amazon take care of ec2's, elb, auto scale etc etc.
+---------------------
+
+AWS WAF: AWS WAF is a web application firewall that helps protect your web applications from common web exploits that could affect application availability, compromise security, or consume excessive resources. 
+-------
