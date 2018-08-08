@@ -117,3 +117,9 @@ AWS Elastic BeanStalk: we upload code and amazon take care of ec2's, elb, auto s
 
 AWS WAF: AWS WAF is a web application firewall that helps protect your web applications from common web exploits that could affect application availability, compromise security, or consume excessive resources. 
 -------
+
+AWS Step Functions:
+------------------
+       - logical flow of functions
+       - we define which function to start first and how to trigger remaning functions (either decision/parallel/step) and step function does execute in order we define and provide a graphical UI of flow.
+       - step functions are serverless.
