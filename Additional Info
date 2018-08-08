@@ -123,3 +123,14 @@ AWS Step Functions:
        - logical flow of functions
        - we define which function to start first and how to trigger remaning functions (either decision/parallel/step) and step function does execute in order we define and provide a graphical UI of flow.
        - step functions are serverless.
+       
+AWS Server Migration Service (SMS):
+----------------------------------
+       - migrate local servers to AWS.
+       - migrated servers volume will be stored as AMI, which can be used to launch ec2 instances.
+       - better option than VM import
+
+AWS Database Migration Service (DMS):
+------------------------------------
+      - migrate local databases to cloud 
+      - can be also useful for continous replication of data from local to cloud or cloud to local
