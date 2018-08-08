@@ -304,6 +304,10 @@ Launch Configurations and Auto Scaling:
 
 . If we delete the auto scaling group, it will automatically delete all the ec2 instances launched by it.
 
+. We cannot modify a launch configuration after it is created.
+
+. We can only assign one launch configuration for one auto scaling group.
+
 
 **** EC2 Placement Groups:
 --------------------------
