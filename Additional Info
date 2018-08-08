@@ -110,7 +110,7 @@ AWS Cloudtrail: For auditing purposes. history of account activities and actions
 --------------
 
 AWS Trusted Advisor: Advices on best practices
--------------------
+-------------------     - can advice on under utilized resources
 
 AWS Elastic BeanStalk: we upload code and amazon take care of ec2's, elb, auto scale etc etc.
 ---------------------
