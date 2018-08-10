@@ -397,3 +397,21 @@ Notes:
    - Athena : Analytics
    - Step Function : Orchestration
    - Developer Tools
+
+Elastic IP's:
+-------------
+. It is a static IPv4 address associated with our account.
+. Elastic IP can be associated with ec2 instances or vpc's.
+. It is used to mask instance failure - that means if an ec2 instance with elastic ip dies, we can attach that same elastic ip to other ec2. So the ip address will still remian valid.
+. If we attach elastic ip to an ec2 instance, the public ip of that instance will be released to aws.
+. An elastic IP is for a region only.
+. when we stop an instance which has elastic ip associated to it :
+    - if that instance is ec2-classic and elastic ip is associated to it, then elastic ip will be diassociated at stop. we must re-associate that elastic ip after it is rebooted.
+    - if that instance is an instance in vpc to which elastic ip is attached, then elastic ip will be always associated if even instance stops and starts.
+
+Elastic Network Interface (ENI):
+--------------------------------
+. It is a networking component in VPC which contains:
+    - primary private ipv4 address, secondary private address, public address, elastic ip address, one/more ipv6 address, one/more security groups
+. Every ec2 instance has etho (primary ENI) attached to it and it cannot be de-attached
+. We can create extra ENI's, define rules, attach them to instance and de-attach them and again attach them to others.
