@@ -109,6 +109,8 @@ Network ACL:
 
 . ******** A subnet can be associated to only one Network ACL *********
 
+. **** A NACL can be attached to multiple subnets
+
 . ***** when we create a Network ACL, by default all access will be DENY. We need to provide access.
 
 . ** Rules are evaluated with number . Eg: 99 will be excuted before 100
