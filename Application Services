@@ -39,6 +39,7 @@ SQS Notes:
 . can store data in queue from 1 minutes to 30 days , with default retention as 4 days
 . SQS gurantees delivery of messages atleast once.
 . *** SQS messages can be encrypted using SSE. We cannot encrypt SQS metadata, message metadata (like timestamp)
+. * SQS doesn't delete any messages, consumers (ec2/lambda) should delete these messages after processing.
 
 
 
