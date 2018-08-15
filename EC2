@@ -142,6 +142,7 @@ EBS ( Elastic Block Storage ):
   AWS Question: to create a same volume in another AZ, then create a snapshot of it and use it to create volume in another AZ.
   AWS Question: to copy an ec2 from one region to another : create a snapshot, copy snapshot to another region, create image and then trigger ec2
                                                             create AMI , use AMI to create new instance on different AZ.
+. * We can detach and re-attach EBS volumes to other EC2 instrances.
 
 
 Snapshots : 
