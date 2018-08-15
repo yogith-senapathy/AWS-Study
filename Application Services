@@ -88,6 +88,9 @@ API Gateway:
 . CORS (Cross Origin REsource Sharing) is a process where we can set relax to smae origin policy.
 . When we see error like "Origin Policy cannot be read at remote resource" then we need to enable CORS at API gateway.
 . ** All API's created using API Gateway are "https" endpoints only. API Gateway supports only https endpoints and doesn't support 'http'
+. Have "Resources": Which are part of API Domains
+      - "Methods" : GET, PUT, POST etc .. supports "ANY" method as well
+      - "Stage" : Stages are similar to tags, where we define API accessible path
 
 
 Kinesis:
