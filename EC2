@@ -416,3 +416,6 @@ Elastic Network Interface (ENI):
     - primary private ipv4 address, secondary private address, public address, elastic ip address, one/more ipv6 address, one/more security groups
 . Every ec2 instance has etho (primary ENI) attached to it and it cannot be de-attached
 . We can create extra ENI's, define rules, attach them to instance and de-attach them and again attach them to others.
+. Hot Attach : Attach ENI to an instance when it is running
+. Warm Attach: Attach ENI to an instance when it is stopped
+. Cold Attach: Attach ENI to an instance when it is being launched
