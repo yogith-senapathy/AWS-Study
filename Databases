@@ -124,6 +124,8 @@ Dynamo DB:
 
 . Capacity increase : we can increase Read and Write count capacity by UI and there willbe no downtime during this process. Whereas in RDS we will have downtime during capacity increase.
 
+. ** DynamoDB Accelarator (DAX): Cache service for DynamoDB to provide frequently accessed data at much faster speeds.
+
 
 Redshift:
 ---------
