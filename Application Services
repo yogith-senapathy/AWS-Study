@@ -108,7 +108,7 @@ Kinesis:
                                               shards have retention period of 24hrs - 7 days
       - Kinesis Firehose:
 
-           Data Producers send data --> Kinesis Firehose (firehose has all automation to analyze data) --> analyzed data sent to storage devices
+           Data Producers send data --> Kinesis Firehose (firehose has all automation to analyze data) --> analyzed data sent to storage devices (s3, redshift, elastic search and splunk)
                                                            no need of shards and consumers, lambda takes care
               
       - Kinesis Analytics:
