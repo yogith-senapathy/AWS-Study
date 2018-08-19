@@ -92,6 +92,7 @@ API Gateway:
 . Have "Resources": Which are part of API Domains
       - "Methods" : GET, PUT, POST etc .. supports "ANY" method as well
       - "Stage" : Stages are similar to tags, where we define API accessible path
+. Prevent DDOS attack
 
 
 Kinesis:
