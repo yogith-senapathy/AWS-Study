@@ -77,6 +77,10 @@ ECS Elastic Container Service: Manage, scale docker containers in AWS
    ECS Scheduler: Service and custom . Schedule to run tasks/containers
 
    Fargate: AWS Fargate is a compute engine for Amazon ECS and EKS* that allows you to run containers without having to manage servers or clusters.
+   
+   ** ECS supports ALB and ELB , so dynamic port mapping is allowed.
+   
+   ** ECS tasks uses IAM Roles to launch containers, this is used to differentiate each container serving an individual request.
 
 Different Types of casting (Route 53 helpful):
 ----------------------------------------------
