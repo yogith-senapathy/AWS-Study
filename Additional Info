@@ -17,6 +17,8 @@
   ***** Cloud Trail is per aws account and enabled per region. But we can aggregate logs by input all multi account logs to a S3 bucket in billing account
  . over all less costs
  . can apply polocies across all accounts. Organization policy is primary consideration.
+ . Paying account sends request to Linked account.
+ . ** Create IAM users in Master account. Enable cross account Roles and allow Policies to these Roles. - When master account users wants to access other accounts
  
 . Cross Account Access: If a developer in developer aws account wants to access production aws account:
   --------------------
