@@ -229,6 +229,7 @@ Elastic Load Balancers:
 
    - Application Load Balancer:
           . suited for http and https; Layer 7; Intelligent; route traffic as per application
+          . supports dynamic port mapping
    - Network Load Balancer:
           . suited for tcp traffic, layer 4, Extreme Powerful, can handle millions of requests, static IP
    - Classic Load Balancer:
