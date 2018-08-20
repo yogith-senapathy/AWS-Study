@@ -102,6 +102,8 @@ Elastic Map Reduce (EMR):
 . * As it has ec2's involved, we can ssh to them
 . We can configure multiple clusters to process data from S3.
 . AWS manages security groups for EMR.
+. EMR can provision dedicated, spot and reserved instances. We can also use different instance types (t,m,c ..) , based on requirements.
+. * EMR launches all ec2 instances in one AZ for better performance.
 
 
 AWS Config:
