@@ -155,3 +155,10 @@ AWS Support Tiers:
 .Developer
 .Business : 1hr response time
 .Enterprise: 15mn response time
+
+AWS Cloudformation:
+-------------------
+. json/yaml format templates
+. create and manage aws resources on fly
+. * Stack is a collection of AWS resources as a single unit in a template
+. Provides 'Wait Condition'
