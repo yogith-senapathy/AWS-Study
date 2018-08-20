@@ -128,8 +128,9 @@ AWS Elastic BeanStalk: we upload code and amazon take care of ec2's, elb, auto s
 ---------------------  Applications have environments, environments have deployments
                        can integrate with S3 (elasticbeanstalk-region-account-id), cloudtrial and RDS. 
 
-AWS WAF: AWS WAF is a web application firewall that helps protect your web applications from common web exploits that could affect application availability, compromise security, or consume excessive resources. 
--------
+AWS WAF: AWS WAF is a web application firewall that helps protect your web applications from common web exploits that could affect application availability, compromise security, or consume excessive resources.
+-------  - firewall to cloudfront
+         - allow all requests except specified, deny all requests except specified, count the requests that match reference
 
 AWS Step Functions:
 ------------------
