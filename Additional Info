@@ -121,7 +121,8 @@ AWS Trusted Advisor: Advices on best practices
 -------------------     - can advice on under utilized resources
 
 AWS Elastic BeanStalk: we upload code and amazon take care of ec2's, elb, auto scale etc etc.
----------------------
+---------------------  Applications have environments, environments have deployments
+                       can integrate with S3 (elasticbeanstalk-region-account-id), cloudtrial and RDS. 
 
 AWS WAF: AWS WAF is a web application firewall that helps protect your web applications from common web exploits that could affect application availability, compromise security, or consume excessive resources. 
 -------
