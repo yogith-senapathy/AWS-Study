@@ -420,3 +420,11 @@ Elastic Network Interface (ENI):
 . Hot Attach : Attach ENI to an instance when it is running
 . Warm Attach: Attach ENI to an instance when it is stopped
 . Cold Attach: Attach ENI to an instance when it is being launched
+
+IP Address Releasing:
+---------------------
+. Private IP Address: Will not be released if instance is stopped/restarted
+                      Will be released by AWS if instance is terminated
+
+. Public IP Address: Will be released by AWS if instance is stopped/restarted/terminated
+                     Will be released by AWS, if instance is attached with elastic IP.
