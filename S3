@@ -151,6 +151,11 @@ Life Cycle Management: Used for better mangement of data. If data upoloaded beco
 
 Access:
 1) Access Control List (ACL) : can be given at bucket level or at object level. Resource Bases Policy and not json format
+                               uses canonical name/email address
+                               - can provide basic read/write access to other aws accounts
+                               - cannot grant permissions to users in account
+                               - cannot grant temporary access
+                               - cannot deny access
 2) Bucket Policy : These are bucket wide and applied for all objects in a bucket.
 
 Cross Region Replication: 
