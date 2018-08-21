@@ -164,3 +164,26 @@ AWS Cloudformation:
 . create and manage aws resources on fly
 . * Stack is a collection of AWS resources as a single unit in a template
 . Provides 'Wait Condition'
+
+AWS CLoudtrial:
+---------------
+. Get user information who accessed aws vipa console/api/sdk
+. auditing purpose
+. stores data in S3
+. Can be enabled per region or for all regions
+. When using cloudtrial for IAM, cloudfront (global resources) , all region cloudtrial should be enabled.
+
+AWS Cloudwatch:
+---------------
+. Monitors AWS resources and tracks metrics
+. Can set alarms based on specifications:
+    - alarms can send sns notifications
+    - alarms can start/stop/terminate ec2 instances, autoscaling
+    - alarms will have :
+                        1) OK - metric is within threshold
+                        2) ALARM - metric is outside of threshold
+                        3) INSUFFICIENT_DATA - metric just started, no enough data
+. Metrics can be built-in or custom created
+. Cloudwatch logs - detailed monitoring. we install a small software in ec2 instances and that package will send detailed logs to cloudwatch.
+. Cloudwatch events - event triggered. When certain conditions match or events happen, then trigger a lambda function
+. Cloudwatch is region specific
