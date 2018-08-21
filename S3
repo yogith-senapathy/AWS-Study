@@ -250,6 +250,12 @@ Static website using S3:
 . ****website url created by S3 will be in this format:
   http://BUCKETNAME.s3-website-AWSREGION.amazonaws.com
 
+Logs:
+----
+1) Server Access Logs: In-depth details of requests made to bucket. Data stored in S3 with prefix.
+2) Object Level Logging: Uses cloud trial to generate audit logs for requests made by api/sdk/console
+3) Cloud Watch: S3 metrics
+
 Notes:
 
 Tag can be made to Bucket and also to individual objects. Tags assigned to Buckets will not be inherited to individual objects
