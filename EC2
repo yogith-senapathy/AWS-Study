@@ -423,8 +423,12 @@ Elastic Network Interface (ENI):
 
 IP Address Releasing:
 ---------------------
-. Private IP Address: Will not be released if instance is stopped/restarted
-                      Will be released by AWS if instance is terminated
+. Private IP Address: For instances launched in EC2-Classic, we release the private IPv4 address when the instance is stopped or terminated. If you restart your stopped instance, it receives a new private IPv4 address.
 
-. Public IP Address: Will be released by AWS if instance is stopped/restarted/terminated
-                     Will be released by AWS, if instance is attached with elastic IP.
+                      For instances launched in a VPC, a private IPv4 address remains associated with the network interface when the instance is stopped and restarted, and is released when the instance is terminated.
+
+. Public IP Address: We release the public IP address for your instance when it's stopped or terminated. Your stopped instance receives a new public IP address when it's restarted.
+
+                     We release the public IP address for your instance when you associate an Elastic IP address with your instance, or when you associate an Elastic IP address with the primary network interface (eth0) of your instance in a VPC. When you disassociate the Elastic IP address from your instance, it receives a new public IP address.
+
+                     If the public IP address of your instance in a VPC has been released, it will not receive a new one if there is more than one network interface attached to your instance.
