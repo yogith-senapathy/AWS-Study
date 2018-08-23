@@ -310,6 +310,12 @@ Launch Configurations and Auto Scaling:
 
 . We can only assign one launch configuration for one auto scaling group.
 
+. Default termination policy: 
+  - select AZ with max number of instances
+  - terminate instance which has old launch configuration
+  - if there are more instances with old launch config's, then select one which is closest to next billing hour
+  - if there are more instances with same billing hour, then select any instance in random
+
 
 **** EC2 Placement Groups:
 --------------------------
