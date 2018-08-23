@@ -358,6 +358,20 @@ Elastic File System (EFS):
 
 . **** EC2 instances and EFS should be in same security group
 
+. General Purpose performance Mode: Low-latency applications like web servers
+. Max I/O Performance Mode: Higher throughput, high latency - big data
+
+. Throughput Mode: Bursting: For general purpose
+                   Provisioned Throughput: high intense applications
+                   
+ . Encryption: supports both rest(console/api/sdk) - only during creation and transit (TLS) using mount helper
+ 
+ . Accessing EFS from On-premise:
+    - supported using Direct Connect
+    - ** not supported by VPN
+    
+ . EFS File Sync: copy data from on-premise to AWS EFS
+
 
 
 Lambda:
