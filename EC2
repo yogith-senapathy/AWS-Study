@@ -356,6 +356,8 @@ Elastic File System (EFS):
 
 . We can apply access levels to folders in EFS and it will be universal.
 
+. **** EC2 instances and EFS should be in same security group
+
 
 
 Lambda:
