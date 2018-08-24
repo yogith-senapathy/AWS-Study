@@ -213,3 +213,11 @@ Notes:
 ------
 . Security Groups acts like a firewall at instance level, whereas Network ACL provides additional layer of security at subnet level.
 . 5 vpc's are allowd by default in a region.
+. Route Table References:
+  ----------------------
+    - Internet Gateway : igw-****
+    - Nat Gateway      : nat-****
+    - VPC Endpoint     : vpce-****
+    - VPC Peer         : pcx-****
+    - VPN              : vgw-****
+    - Direct Connect   : vgw-****
