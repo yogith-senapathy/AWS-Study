@@ -221,3 +221,4 @@ Notes:
     - VPC Peer         : pcx-****
     - VPN              : vgw-****
     - Direct Connect   : vgw-****
+    - Customer Gateway : cgw-****
