@@ -118,3 +118,5 @@ Kinesis:
 SES:
 ----
 . It is an email service from AWS.
+. Can receive emails and store in S3.
+. SES can trigger Lambda functions.
