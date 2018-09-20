@@ -40,8 +40,10 @@ Policies are four types:
      Identity Policy shows, which resource has been attached to policy.
 
     Identity Policies are two types:
-       a) Managed policies: Policies created by AWS/ created by users
-       b) Inline policies: Policies created by users and are embedded to users.
+       a) Managed policies: Policies created by AWS
+       b) Customer Managed policies: Policies created by user
+       c) Inline policies: Policies created by users and are embedded to users/groups/roles.Inline policies can only be attached to one user/group/role.
+                           If user/group/role is deleted, then Inline policy will also be deleted.
 
   b) Resource based Policy : popular for granting cross-account access
 
