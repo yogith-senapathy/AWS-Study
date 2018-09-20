@@ -187,3 +187,10 @@ AWS Cloudwatch:
 . Cloudwatch logs - detailed monitoring. we install a small software in ec2 instances and that package will send detailed logs to cloudwatch.
 . Cloudwatch events - event triggered. When certain conditions match or events happen, then trigger a lambda function
 . Cloudwatch is region specific
+
+AWS Cognito:
+-----------
+. Cognito provides features on mobile applications, where users sign in information to google/facebook etc will be used to connect to AWS resources.
+. User Pools : Users sign in to facebook/google etc and send this sign in info to Cognito.
+. Identity Pools : Cognito uses this User Pools info and generate a temporary token using Identity Pools to connect to AWS.
+. Cognito uses SNS for 'Push Synchronization'. This will be used in multiple sign in takes places to same account from different devices.
