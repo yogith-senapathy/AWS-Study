@@ -65,7 +65,8 @@ keep tracks of tasks           manually set tracking by using various resources.
 SNS Simple Notification Service:
 --------------------------------
 . It is a push based messaging system.
-. We create topics in SNS and subscribe to those topics (pub-sub model).
+. We create topics in SNS and subscribe to those topics
+. SNS is pub-sub (or) fan-out model.
 . Subscriptions can be http, https, SQS, Lambda, SMS and Email.
 . We can have multiple subscriptions to a topic.
 . When a topic is created a ARN is created.
