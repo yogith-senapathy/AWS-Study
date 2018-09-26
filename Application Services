@@ -26,7 +26,7 @@ SQS Simple Queue Service:
 . SQS Visibility Timeout:
          . It is the amount of time a message will be invisible in a queue after it is processed.
          . If a job is processed within that visibility time then message gets deleted else new duplicate message will be added into queue.
-         . Default is 30 seconds and max is 12 hrs.
+       **. Default is 30 seconds and max is 12 hrs.
 
 . SQS Long Polling: long polling doesn't return a response until a queue is available. Cheaper cost
 
@@ -36,7 +36,7 @@ SQS Notes:
 ----------
 . It is pull based
 . supports data size of upto 256KB
-. can store data in queue from 1 minutes to 30 days , with default retention as 4 days
+. can store data in queue from 1 minutes to 30 days , with default retention as 14 days
 . SQS gurantees delivery of messages atleast once.
 . *** SQS messages can be encrypted using SSE. We cannot encrypt SQS metadata, message metadata (like timestamp)
 . * SQS doesn't delete any messages, consumers (ec2/lambda) should delete these messages after processing.
