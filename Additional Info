@@ -194,3 +194,4 @@ AWS Cognito:
 . User Pools : Users sign in to facebook/google etc and send this sign in info to Cognito.
 . Identity Pools : Cognito uses this User Pools info and generate a temporary token using Identity Pools to connect to AWS.
 . Cognito uses SNS for 'Push Synchronization'. This will be used in multiple sign in takes places to same account from different devices.
+. Cognito Streams are used to analyze data stored in AWS Cognito.
