@@ -40,6 +40,9 @@ SQS Notes:
 . SQS gurantees delivery of messages atleast once.
 . *** SQS messages can be encrypted using SSE. We cannot encrypt SQS metadata, message metadata (like timestamp)
 . * SQS doesn't delete any messages, consumers (ec2/lambda) should delete these messages after processing.
+. SQS supports "Dead Letter Queue" , which are useful for debugging application.
+  - The dead-letter queue of a FIFO queue must also be a FIFO queue. 
+  - Similarly, the dead-letter queue of a standard queue must also be a standard queue.
 
 
 
