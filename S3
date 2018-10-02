@@ -3,6 +3,8 @@
  S3 is object based storage - means we can store data like files,pdf,pictures and vidoes. S3 is not a Block Based Storage - means it cannot store databases, computing systems.
 
   Files size can be from 0 to 5TB.
+  
+  Files larger than 5TB can be uploaded using Multi-Part Upload API.
 
  S3 has Buckets where files will be stored. These Buckets are universal and should have unique names because:
    .S3 buckets are used as domains. As we cannot use the same domain created by others our bucket name should be unique from others.
