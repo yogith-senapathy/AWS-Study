@@ -197,6 +197,11 @@ AWS Cognito:
 . Cognito Streams are used to analyze data stored in AWS Cognito.
 . Cognito can be enabled with unauthenticated identities to allow access via unauthenticated identities.
 
-AWS Systems Manager Parameters:
-------------------------------
-. Helps to store credentials and use them by referencing to their unique name.
+AWS Systems Manager Parameters (SSM):
+------------------------------------
+. Helps to store credentials/passwords/database codes and use them by referencing to their unique name.
+. Can integrate with multiple aws services.
+. Common API Actions:
+   - Put Parameter : add parameters to parameter store
+   - Get Parameter
+   - Delete Parameter
