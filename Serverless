@@ -204,6 +204,15 @@ X-RAY:
 . X-RAY will add a Trace-ID to our application. So as it moves through various stages/flows, we can track it using trace id.
 . Sampling Alogithms are used to sample out requests.
 
+. Concepts:
+  --------
+   - Segments : data of work done by app
+   - Subsegments : granular data from segments
+   - ServiceGraph : visual graph
+   - Traces : Trace ID header attached to http method
+   - Sampling : Determine what requests can be traced
+   - Filter : Filter data from X-RAY
+
 
 Notes:
 ------
