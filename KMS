@@ -1,0 +1,35 @@
+AWS Key Management Service (KMS):
+---------------------------------
+- Service useful to create and control encryption keys used to encrypt data.
+- It is integrated with other services like EBS, S3, RDS, Redshift, Elastic Transcoder, WorkMail etc
+- It is part of IAM.
+- ***** IAM is global, but KMS (part of IAM) is region specific.
+- Key Material Origin : KMS or External
+- KMS Customer Master Key (CMK):
+    . alias
+    . creation date
+    . description
+    . key state
+    . Key material (either customer provided or AWS provided)
+    . Can never be exported *****
+
+- For keys exporting use Cloud HSM.
+- KMS uses multi-tenanted hardware whereas HSM is dedicated to user.
+
+- CMK creation:
+    . use encryption key in IAM
+    . Define key administrative permissions (who can administrate this key)
+    . Define key usage permissions (IAM users/roles that can use this key to encrypt & decrypt)
+    . we can add external accounts to encrypt & decrypt using keys.
+
+- Useful commands:
+  . aws kms encrypt : encrypt data
+  . aws kms decrypt : decrypt data
+  . aws kms re-encrypt : encrypted already encrypted data
+  . aws kms enable-key-rotation : key rotation of KMS
+
+- Envelope Keys: Keys which are used to encrypt KMS keys are called envelope keys.
+      . Envelope Encryption: Master key is used to encrypt data key (envelope key). envelope key is used to encypt data.
+      . Decryption : Encrypted data key is decrypted using master key and algorithm. Decrypted envelope key is used to decrypt data.
+
+- ** Disable keys and then delete them. We can delete them directly, we need to schedule a deletion between 7 - 35 days.
