@@ -1,0 +1,225 @@
+Lambda:
+--------
+. It is a serverless compute service.
+. We provide code and aws provides all required infrastratcure
+. It can be event driven, like a change in S3 or change in dynamodb table can trigger a lambda function
+. It can also be a time trigger , using cloudwatch event
+. used to run code in response to http requests using AWS API Gateway / api calls made using aws sdk.
+. Lambda supports Java, Python, NodeJS, Go, C#
+. Price : # of requests and duration of executing code
+
+. Lambda Monitoring & Troubleshooting:
+  -----------------------------------
+  - AWS X-RAY is used to debug Lambda architectures. : a lambda can trigger s3/dynamo/SNS and it will be difficult to trace errors in huge scenarios. X-RAY can be used here.
+  - AWS Cloudwatch can monitor lambda functions, can set alarms.
+  - We can also write code with logging statements to debug errors on lambda console.
+  - event payload to after maximum retries are exceeded (Debugging and Error Logging (DLQ)) :  SNS / SQS.
+
+
+. ******** Lambda triggers are :
+
+     Alexa, Dynamo DB, SNS, SQS, S3, IOT, API Gateway, Cloudfront, cloudwatch (events and logs), Code Commit, cognito sync trigger, Kinesis
+
+. Lambda triggers means , what aws services can trigger this lambda function.
+
+. Environment Variables: Key value pair provided to lambda function. Values can be encrypted using KMS.
+                         Encryption can be done at transit or at Rest
+                         useful to supply passwords values to lambda function.
+
+. We can add tags to lambda functions
+
+. ** VPC: Lambda function can run without any VPC.
+          But if we want to run lambda function in a VPC provided:
+              - provide atleast 2 subnets for high availability
+              - provide security groups for connectivity
+              - ***** When you enable VPC, your Lambda function will lose default internet access. If you require external internet access for your function, ensure that your security group allows outbound connections and that your VPC has a NAT gateway.
+              - ***** If lambda has to connect to ec2 or any service which is in a private vpc, then provide detials of subnet and security groups of that vpc.
+
+. Versioning: We can enable versioning in aws lambda, where we can have multiple versions of lambda function.
+              - each version has a separate ARN
+              - After a version is published, it is immutable (it cannot be changed)
+              - we can only update $LATEST version
+              - Qualified and UnQualified ARN:
+                      - Qualified ARN will have version number as a suffix to ARN 
+                      - UnQualified ARN will not have version number as a suffix to ARN
+              - Alias : we can assign an alias value (eg: PROD) to lambda version (eg:1.0). This alias can be used in other aws services (eg:s3 etc) to call lambda function.
+                        Alias's can be shifted from one version (eg:1.0) to another version (eg:2.0)
+                     ***** Alias's can also be used to split traffic between different versions. (**** Cannot split to $LATEST and split only possible between two versions)
+
+. In Lambda, we can 1) write code inline or 2) upload a zip file which contain handler or 3) point lambda to S3 bucket which has code in zip file.
+
+. Lambda@Edge:
+          - service to customize content for cloudfront users.
+
+. Lambda best practice is to avoid recursion : a lambda function shouldn't call itself multiple times.
+
+. Concurrent Execution: Lambda fucntion processing concurrently (parallel)
+                        default to 1000, but we can change it.
+                        on reaching concurrency limit, all new function invocations will be throttled.
+                        we can also manually set throttle the function - this will make concurrent execution to 0 (zero).
+
+. We can set timeout period for lambda functions.
+
+. Permissions:
+  -----------
+
+   - Execution Role: If lambda executes and has to put a file in S3, then execution role is required which allows lambda to have put access in S3.
+                     A Role assigned to Lambda Function, which specifies what other AWS services does this lambda function can access.
+
+   - Function Role : If S3 has to trigger lambda function, then a function role is required which allows S3 to trigger lambda.
+
+. SAM (Serverless Application Model):
+  -----------------------------------
+  AWS Lambda application is a combination of Lambda functions, event sources, and other resources that work together to perform tasks.
+  - extension to cloudformation to build serverless applications
+  - abstracts some common points and helps in easy creation of templates.
+  - a cloudformation template referencing to serverless is called SAM template.
+  - SAM cli can be used in local to test lambda function in local using docker.
+
+. Deploying serverless applications:
+   - SAM
+   - SAM cli
+   - Cloud formation
+   - Code Build
+   - Code Pipeline
+   - Code Deploy
+
+. Event Source Mapping: Lambda can be invoked by kinesis streams (or) DynamoDB streams. The association between streams and lambda is called as event source mapping.
+  --------------------- It is a pull based model. Lambda polls/pulls data from kinesis & dynamodb streams.
+
+API GATEWAY:
+------------
+
+. API : Application Programming Interface
+. Types of API's:
+   - REST API (Representational State Transfer) : uses json
+   - SOAP API (Simple Object Access protocol) : uses xml
+
+. API GATEWAY: publish, maintain, monitor and secure API's at any scale
+               Create API using API Gateway, which acts as front door for applications
+               API Gateway connects to ec2 instances / Lambda / dynamodb or any web applications
+
+. API Gateway :
+    - provides/expose https endpoints to define rest api's (provides https url to check for application api's)
+    - serverless
+    - send each API endpoint to a different destination
+    - low cost, scales effortlessly
+    - track and control usage of API by API Key
+    - Throttle requests to prevent DDOS attack
+    - Connect to cloudwatch for logs
+    - maintain muliple versions of API.
+
+. API Gateway configuration:
+    - Define an API (container)
+    - Define Resources and nested Resources (URL paths) (https url)
+    - For each Resource:
+           - Select supported HTTP methods (verbs) - (get, put, post, delete , ANY etc)
+           - Set security
+           - choose target (ec2, lambda, dynamodb)
+           - set request and response transformations
+    - Deploy API to a stage (PROD, DEV, UAT):
+           - ***** Uses API Gateway domain by default
+           - can use custom domain
+           - supports AWS Certificate Manager (SSL/TLS)
+           - *** API Gateway have history of our stages and we can always roll back to previous stages.
+
+. API caching:
+    - API Gateway can cache enpoint's reponse
+    - reduce number of calls made to endpoints
+    - improve latency
+    - API Gateway caches response for a specified TTL (seconds)
+    - By defualt caching is allowed for GET requests. But we can extend to other methods as well.
+    - a client API can invalidate cache. So it forces to get data from API Gateway and also update cache.
+    - If a request is made to API Gateway and that data is available in cache - then requests will not be throttled/check for throttle. 
+       If data is not in cache, then only throttle checks will be made.
+
+. Same Origin Policy: Under this policy, web browser permits scripts contained in first web page to access data in second web page, only if both web pages are from same origin.
+                      This is to prevent Cross-Site Scripting (XSS) attacks.
+
+. Cross-Origin Resource Sharing (CORS): a way the server at other end can relax same - origin policy.
+
+. Import API:
+    - Use 'API Gateway Import' API import feature to import API's from external definition files to API Gateway.
+    - Currently this feature is supported for 'swagger-2.0' definition files.
+    - With import feature, we can either create a new API using POST to swagger file or update existing API by a PUT to swagger file.
+
+. API Throttling:
+     - By default API Gateway supports upto either 10,000 requests per second (RPI) or 5000 concurrent requests across all API's.
+     - If above specified limit is excedded, we get "429 Too Many Requests" error.
+     - we can set our own limit per method (get/put etc) or set limit for a burst of requests.
+     - we can throttle requests for individuals based on API keys.
+
+. ** We can configure API GATEWAY as a SOAP webservice passthrough.
+
+. API Gateway endpoints are always https. Different types of endpoints:
+      - Regional APIs are deployed in the current region. 
+      - Edge Optimized APIs are deployed to the CloudFront network. 
+      - Private APIs are accessible only from VPCs.
+
+. Controlling Access to an API in API Gateway
+    API Gateway supports multiple mechanisms for controlling access to your API:
+
+    - Resource policies let you create resource-based policies to allow or deny access to your APIs and methods from specified source IP addresses or VPC endpoints.
+
+    - Standard AWS IAM roles and policies offer flexible and robust access controls that can be applied to an entire API or individual methods.
+
+    - Cross-origin resource sharing (CORS) lets you control how your API responds to cross-domain resource requests.
+
+    - Lambda authorizers are Lambda functions that control access to your API methods using bearer token authentication as well as information described by headers, paths, query strings, stage variables, or context variables request parameters.
+
+    - Amazon Cognito user pools let you create customizable authentication and authorization solutions.
+
+    - Client-side SSL certificates can be used to verify that HTTP requests to your backend system are from API Gateway.
+
+    - Usage plans let you provide API keys to your customers — and then track and limit usage of your API stages and methods for each API key.
+ 
+    - Restrict access via VPC endpoints.
+
+
+
+
+
+Step Functions:
+---------------
+. Step Functions allows to visualize and test serveless applications
+. Provides graphical console to organize, analyse and test
+. Triggers steps, track status of steps and retry steps in event of failure
+. Store logs of steps - helps in diagnosis
+. steps are defined using JSON-based Amazon States Language
+. Uses cloud formation to provide resources defined in steps.
+. ** Deleted cloud formation template will delete all resources created by it.
+. Wait State will add wait times between stages.
+
+X-RAY:
+------
+. Collects data about serverless application services and provides tools to filter & visualize data.
+. Detailed information about requests made to services will be provided.
+. Architecture:
+    X-RAY SDK --> X-RAY Daemon --> X-RAY API --> X-RAY Console
+. X-RAY SDK : provides interceptors to code to trace incoming http calls
+. X-RAY Integration: Lambda, EC2, ELB, API Gateway and Elastic Beanstalk
+. X-RAY supported Languages: Java, Python, NodeJS, GO, Ruby and .Net
+
+. Subnets and VPC should be defined during creation of X-RAY.
+. X-RAY will add a Trace-ID to our application. So as it moves through various stages/flows, we can track it using trace id.
+. Sampling Alogithms are used to sample out requests.
+
+
+Notes:
+------
+
+. ******* serverless options by AWS:
+   - Lambda : computing
+   - API Gateway : API Proxy
+   - S3 : Storage
+   - Dynamo DB : Database
+   - APP Sync : Database
+   - SNS : Messaging
+   - SQS : Messaging
+   - Kinesis : Analytics
+   - Athena : Analytics
+   - Step Function : Orchestration
+   - Developer Tools 
+
+API Gateway cache invalidation: https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-caching.html#invalidate-method-caching
+API GAteway Throttling : https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-request-throttling.html
