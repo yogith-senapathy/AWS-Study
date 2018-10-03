@@ -280,3 +280,36 @@ S3 IA one zone  99.999...%     99.5%
 Glacier         99.999....%    99.99%
 RRS             99.99%         99.99%
 
+Encryption Enforcement:
+-----------------------
+S3 offers encryption at REST by 1) SSE-S3 2) SSE-KMS and 3) SSE-C
+
+Encryption is done before uploading to S3.
+
+When we upload a file to S3, we are making a PUT request which has multiple details in it. We can enable "Except: 100-continue", which will make sure required hearders are passed to process request.
+
+When file is to encrypted at upload time, 'x-amz-server-side-encryption' parameter will be included in header. These are of two types:
+
+x-amz-server-side-encryption: AES256 (SSE-S3)
+x-amz-server-side-encryption: ams:kms (SSE-KMS)
+
+***** We can create a Bucket Policy, where we can define "DENY" any PUT request which doesn't have server side encryption header. By this way, we enforce encryption.
+
+
+***** CORS (Cross Origin Resource Sharing):
+-------------------------------------------
+. If a file in one S3 bucket have to access a file in another bucket, then we enable CORS in another bucket.
+. CORS is used for better organizing websites (we can place separate files in separate folders), better security in accessing other resources
+. CORS is always enabled on destination bucket which will be called by resource. i.e if Bucket A has html file which calls a file in Bucket B, then CORS is enabled on Bucket B.
+. In destination bucket, we specify "AllowedOrigin" value. This is the source bucket which is calling destination bucket.
+
+S3 Performance:
+---------------
+. Use hexadecimal hash at the start of key name, so that multiple GET/PUT/POST requests resulsts in less I/O.
+
+GET intensive workloads : Use cloudfront
+
+Mixed workloads (GET/PUT?POST) : use hexadecimal hash to key name.
+
+. **** This is now changed , aws s3 can accept 3500 put and 5500 get requests. so no need of hash's , we can still use them as key names but not required for performance.
+
