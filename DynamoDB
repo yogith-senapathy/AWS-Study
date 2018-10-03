@@ -1,0 +1,204 @@
+DynamoDB:
+---------
+
+. NoSQL Database (non-sequential)
+. Fast and Flexible
+. Stored on SSD storage
+. ** Spread across 3 geographically distinct data centers
+. ****** DynamoDB supports optimistic concurrency for conditional writes
+
+. Consistency Models:
+     - Eventual Consistent Reads (Default): consistency across all copies for READ within a second after WRITE.
+     - Strongly Consistent Reads : consistency across all copies for READ in less than a second after WRITE.
+
+. Consists of Tables, Items (rows), Attributes (columns), key-value pairs, documents can be json/html/xml.
+
+. DynamoDB has two primary keys to store & retrive data based on primary key:
+   
+     1) Partition Key : 
+                        contains unique attribute
+                        Value of this key is input to an hash function which determines the partition (or) physical location on which data is stored.
+                        ** No two items will have same partition key
+
+     2) Composite Key (Partition Key + Sort Key):
+                  - useful when same user posting multiple times to a forum
+                  - 2 items may have the same parition key but different sort key, then sort key is used to sortout required data.
+
+. Examples:
+1) {
+   "ID": 110,     -----------> Partition Key
+   "FName": 'Alex',
+   "LName": 'Brown'
+   }
+ In above example, each key value pair is unique and we can use "ID" key as partition Key to get details of user.
+
+
+2) {
+   "ID": 110,     -----------> Partition Key
+   "FName": 'Alex',
+   "LName": 'Brown'
+   "Course": 'Developer' ------> Sort key
+   }
+ 
+   {
+   "ID": 110,     -----------> Partition Key
+   "FName": 'Alex',
+   "LName": 'Brown'
+   "Course": 'Associate' ------> Sort key
+   }
+
+ In above example, we can have same ID multiple times but can still get details of user using "Sort Key"
+
+
+. Access to DynamoDB:
+    - IAM policies attached to users/ groups
+    - IAM policies attached to Roles, which can be assigned to ec2, lamnda etc to interact with dynamodb
+    - *** We can also restrict users to only records in a table using IAM.
+           - this uses concept of partition key matching a specific value.
+           - dynamodb:LeadingKeys is the conditional IAM parameter which looks for keys and allows access if the value matches.
+
+
+. Indexes:
+    - Index helps to query particular columns instead of entire dataset, resulting in faster and efficient queries.
+    - Dynamodb have two types of indexes:
+         - Local Secondary Index
+                    - can only be created during creation of table
+                    - cannot add/remove/modify after creation
+                    - has same partition key as main table, but different sort keys
+                    - queries are made using partition and sort keys, which retrieve data faster.
+         
+         - Global Secondary Index
+                    - can be created whenever required
+                    - different partition key and different sort key
+                    - queries are made using different partition and sort keys
+
+     - Best practices on indexes:
+         a) create less number of indexes
+         b) don't use indexes for heavy write operations
+
+     - We can create up to 5 local secondary indexes and 5 global secondary indexes per table.
+
+. Query vs Scan:
+
+  - Query : it is an operation to find a vale in table based on primary key id
+            can use sort keys and values to refine results
+            can use "ProjectionExpression" to retrieve required attributes from query , instead of all values.
+            Numeric Order (by default is Ascending order - 1,2,3,4 ..)
+            ASCII order
+            We can change order by setting ScanIndexForward parameter to False
+            By default queries are eventual consistent. We can set them to strong consistent
+
+  - Scan: it is an operation which will examine every item in table
+          can use "ProjectionExpression" to refine results
+
+  - Query is better than Scan because Scan loads entire table & then applies filter to it.
+    Scan is time taking, heavy, extra step and may consume database load on large databases.
+    we can reduce quer/scan impact by setting a smaller page size.
+    Parallel scan is useful to reduce impact. Parallel scan is not suggested if our dynamo db is already heavy on read/write.
+
+. DynamoDB Provisioned Throughput : Throughput is measued in capacity units (read and write)
+                    - Read and Write capacity units must be defined while creating table, so dynamodb will reserve our resources. We can change capacity units easily after creating table as well.
+                    -  One Write Capacity unit = 1 * 1KB ( 1 write of 1kb size per second )
+
+                    -  One Read Capacity unit = 1 * 4kB ( 1 Strongly Read of 4kb size per second )
+
+                                              = 2 * 4kB ( 2 Eventual Reads of 4kb size per second )
+                        evantual consisteny = strong / 2
+
+                    - For example, suppose that you create a table with 5 read capacity units and 5 write capacity units. With these settings, your application could:
+
+                         Perform strongly consistent reads of up to 20 KB per second (4 KB × 5 read capacity units).
+
+                         Perform eventually consistent reads of up to 40 KB per second (twice as much read throughput).
+
+                         Write up to 5 KB per second (1 KB × 5 write capacity units).
+
+    - Question: Your application needs 80 items per second, each item is of 3KB size and require strong consistency.
+         answer: read capacity per second = 3kb/4kb = 0.75 ~= 1 unit per second.
+                 rquired reads = 80. So 1 * 80 = 80 strong consistency reads are required.
+
+        answer for eventual consisteny = 3kb/4kb ~= 1 --> (1 * 80)/2 = 40  eventual reads are required.
+
+    - Question: Your application requires to write 100 items per second and each item of 512 bytes
+        answer : 512bytes/1 KB = 0.5 ~= 1 -->  1 * 100 = 100 writes
+
+    - If your read or write requests exceed the throughput settings for a table, DynamoDB can throttle that request.
+    - Throttling prevents your application from consuming too many capacity units.
+    - When a request is throttled, it fails with an HTTP 400 code (Bad Request) and a ProvisionedThroughputExceededException.
+
+    - DynamoDB provides the following mechanisms for managing throughput:
+
+         DynamoDB auto scaling : we define a range for reads & writes and dyanmodb will auto scale between this range.
+
+        Provisioned throughput : manually define provisioned requirements.
+
+        Reserved capacity : reserve a capacity in prior to save costs.
+
+    - Partitions Throughput : When we quer huge # of times using partition key, then partition throughput occurs.
+
+
+. DynamoDB Accelarator (DAX): in-memory cache for dynamodb
+                              ***improves performance for "eventual consistency" reads only
+                              only for Reads/ bursts
+                              when we put data in dynamodb, it will be also put into DAX. Write-through caching model.
+                              if a query is made to DAX and that particular is not in DAX, then DAX pings dynamodb - get the item and store in it's cache.
+                              DAX is not suitable for :
+
+                                  - strongly consistent reads
+                                  - write operations
+                                  - applications that don't require microsecond responses or applications that are not read heavy
+
+. We can take a manual backup of dynamodb and this can stored for 35 days.
+
+. Encryption:
+   - ** Encryption can only be enabled during creation of table. We cannot set encryption after table creation.
+   - After encryption is enabled, it cannot be disabled.
+
+. ** We can set TTL for data stored in dynamoDB.
+
+. ** Global Tables : Replicate tables, data in tables in different regions.
+
+. Maximum size of an item stored in dynamodb is 400KB.
+
+DynamoDB Streams:
+----------------
+
+. SQL databases support transactions, triggers, auditing & replication.
+. DynamoDB doesn't support transactions.
+. DynamoDB Streams can beused to perform transactions.
+. DynamoDB Streams helps in :
+    - auditing & archiving transactions
+    - trigger event based transactions
+    - replicate data across multiple tables
+    - ** setup relationship between multiple tables based on an item, so to update secondary tables.
+
+Notes:
+------
+. Read Dynamodb initial document
+. Read dynamodb FAQ
+. Read this : https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ProvisionedThroughput.html
+. Read backups: https://aws.amazon.com/dynamodb/backup-restore/
+. Read Encryption
+. ** When we Scan , we can only apply filters. Not like partion key and sort key search in query.
+. Hot Keys :
+    - during certain cases (say elections) our primary keys will be heavily used and these are called hot keys.
+    - To avoid any negative affects , we should add some random strings to users who call them.
+
+. Use Lambda to delete expired items.
+
+. Partition Locks: use metadata of item for versioning and lock the data using version number.
+
+. Sparse Index: Sparse Index is a feature where our table returns the items which have an unique value. Lets say out of 10 values in a gaming table, there will be only one winner.
+
+. DynamoDB API Calls:
+   - GetItem
+   - BatchGetItem
+   - Query
+   - Scan
+   - PutItem
+   - UpdateItem
+   - DeleteItem
+   - BatchWriteItem
+   - DescribeTable
+
+. DynamoDB doesn't support complex joins. RDS supports them.
