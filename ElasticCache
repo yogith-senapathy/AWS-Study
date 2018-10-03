@@ -1,0 +1,28 @@
+. Elastic Cache : AWS webservice which offers easy deploy, operate and scale in-memory cache
+                  helps improve web performance by fast pulling of data from cache instead of from huge databases.
+                  This is of two types:
+                     - Memcached : 
+                                   Widely used
+                                   horizontal scaling
+                                   no persistence / no AZ
+                                   memcached nodes as poll which can increase/decrease in size automatically, automatic failover/replacement of nodes.
+                     - Redis : 
+                               key- value store
+                               supports sets and lists
+                               supports master/slave 
+                               supports Multi AZ for redundancy and automatic failover
+                               AWS treats Redis as Relational Databases
+                               *****performs sorting and ranking of datasets, such as "Leaderboards"
+                               parameter groups helps in defining common values across nodes for memory and item size.
+
+. Caching Stratagies:
+  
+   1) Lazy Loading:
+           - loads data into cache only when necessary
+           - If an application query data to elastic cache and if that data exists then elastic cache will return that data. If not available then elastic cache will return a null.
+           - Application then will receive data from database and loads to elastic cache, so it can be used for next time.
+           - there may be a chance that data in elastic cache is out-dated, beacause lazy loading updates cache only when there is a cache miss.
+           - can use TTL for data caching. Lazy loading will think expired key as expired data and re-loads data from database to cache.
+
+   2) Write Through :
+           - updates data in cache whenever there is a change of data in original database.
