@@ -72,6 +72,38 @@ Elastic Beanstalk:
                 additional security group should be added to beanstalk environment autoscaling group, to allow traffic to/from RDS
                 provide RDS connection information like password, endpoint and variables to beanstalk environment. 
 
+Elastic Beanstalk Environmnets:
+-------------------------------
+
+ . Web Server Environment:
+   ----------------------
+      - It is basically an environment for web server hosting.
+      - It includes one ELB , one Auto Scaling group , one or more ec2 instances.
+      - a software component called the host manager (HM) runs on each ec2 instance and it is responsible for:
+           - deploying application
+           - patching environments
+           - metrics , events and log files of errors to S3
+           
+  . Worker Tier Environment:
+    ---------------------------------
+      - An environment tier whose web application runs background jobs is known as a worker tier
+      - worker environment tier include an Auto Scaling group, one or more Amazon EC2 instances, and an IAM role.
+      - Elastic Beanstalk installs a daemon on each EC2 instance in the Auto Scaling group to process SQS messages in the worker environment
+      - Elastic Beanstalk worker environments support SQS dead letter queues, where worker can send messages that for some reason could not be successfully processed. 
+      - Dead letter queue provides the ability to sideline, isolate and analyze the unsuccessfully processed messages
+      
+   . In general Elastic Beanstalk uses web server and work tier to full fill requests.
+     - Web server acts like front end ( with ELB, AS, ec2's ), accepts input from user and push that input to SQS
+     - Worker Tier works in back end (with AS, ec2's, IAM & SQS). Gets messages from SQS, process them and sends info back to SQS.
+        - Web server will now take this message from SQS and sends to users
+        
+Permissions:
+-----------
+  . When creating Elastic Beanstalk environment , we need to provide :
+   - Service Role : IAM Role assumed by Beanstalk to access other AWS resources
+   - Instance Profile : IAM Roles set to AWS resources launched by AWS
+   - User Policy : Policies assigned to individual users to access Beanstalk and resources created by it.
+
 Notes:
 ------
 AWS Elastic Beanstalk platforms are versioned using this pattern: MAJOR.MINOR.PATCH (e.g., 2.0.0). Each portion is incremented as follows:
@@ -87,16 +119,6 @@ PATCH version when there are backward-compatible bug fixes.
 *** Application Life Cycle Policy can be used to manage life cycles of applications.
 
 *** Cron.yml is used to deploy worker applications that process periodic tasks.
-
-AWS Elastic Beanstalk worker tier:
----------------------------------
-
-- An environment tier whose web application runs background jobs is known as a worker tier
-- worker environment tier include an Auto Scaling group, one or more Amazon EC2 instances, and an IAM role.
-- Elastic Beanstalk installs a daemon on each EC2 instance in the Auto Scaling group to process SQS messages in the worker environment
-- Elastic Beanstalk worker environments support SQS dead letter queues, where worker can send messages that for some reason could not be successfully processed. 
-- Dead letter queue provides the ability to sideline, isolate and analyze the unsuccessfully processed messages
-
 
 FROM VIDEO:
 ------------
