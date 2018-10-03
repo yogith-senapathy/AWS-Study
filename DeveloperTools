@@ -1,0 +1,103 @@
+CodeCommit:
+-----------
+. source control system in aws
+. can store packages also (jar/zip etc)
+. provides all functionalities in GIT. Can use git in local machine and interact with aws code commit.
+. Data is encrypted both at transit and at rest.
+. will integrate with SNS to send emails for commits, pull requests.
+. ** For connecting git local to codecommit via 'https', we need to add awsconfigure with user secret ID and key.
+
+CodeDeploy:
+-----------
+
+. CodeDeploy automates deployments to ec2, lambda and on-premisis.
+
+. Roll back is possible in deployment.
+
+. Code Deployment Methods:
+
+   - In-place deployments: instances serving applications will be stopped, deployed with new code and then restarted.
+                           we can use load balancer to de-regitser traffic register traffic after deployments.
+                           Only ec2 and local instances can follow this process.
+
+   - Blue/Green Deployments : a new set of instances are created and deployment is taken on these new instances.
+                              After successful deployment on new instances, traffic is routed to new instances and old instances are terminated.
+                              EC2 can follow this model.
+
+       . Blue/Green Deployment Lambda: Lambda can only follow Blue/Green model.
+                                       Traffic is shifted from one version of function to another.
+                                       Traffic can be shifted from one lambda to another in multiple ways:
+                			 - Canary: A percentage of traffic shifted to new version. If no issues then shift all traffic.
+                			 - Linear: Traffic is shifted in equal increments in equal time limits. Like 10% of traffic to be shifted every 5 minutes.
+                			 - All At Once: Shift all traffic to a function at once.
+
+
+. AppSpec File :
+
+   - It is used to define parameters which define if codedeploy takes place in ec2/on premises/lambda.
+   - It can be YAML or JSON for Lambda.
+      - Version: Reserved for future use
+      - Resources: Name & Property of lambda function
+      - Hooks: specifies lambda to run at set points in deployment lifecycle.
+
+   - Appsec File Hooks - Lambda:
+      . Before Allow Traffic: lambda functions to run before traffic is routed to newly deployed function.
+      . After Allow Traffic: lambda functions to run after traffic is routed to newly deployed function.
+
+   - Appsec File Hooks - ec2/on-premisis
+       - version : For future use
+       - OS : Operating system
+       - files : location of appsec files
+       - hooks : scripts to run at set points in deployment lifecycle.
+       - The yaml file should be placed in top level directory.
+
+        . BeforeBlockTraffic: Run tasks on instances before they are de-registered
+        . BlockTraffic:  De-registers instances from ELB
+        . AfterBlockTraffic: Run tasks on instances after they are de-registered
+
+        . ApplicationStop : Stop application before deploying new version.
+        . DownloadBundle: codedeploy agent copies bundle to temporary location
+        . BeforeInstall: Details of pre-installation scripts.
+        . Install: copy files from temporary location to correct location.
+        . AfterInstall: Details of Post install
+        . ApplicationStart: Restarts any services that were stopped during ApplicationStop
+        . ValidateService: Details of any tests to validate service.
+
+
+- Order of codehooks for codedeploy deployment process:
+
+  START                               ApplicationStop               BeforeAllowTraffic
+   |                                     |				|
+  BeforeBlockTraffic                  DownloadBundle		    AllowTraffic
+   |                                     |				|
+  BlockTraffic                        BeforeInstall		    AfterAllowTraffic
+   |                                     |				|
+  AfterBlockTraffic		      Install			    END
+					 |
+ (De-register from ELB)		      AfterInstall                 (Re-register with ELB)
+					 |
+				      ApplicationStart
+					 |
+				      ValidateService
+
+
+*** appspec file should be 'yml' for ec2. For lambda it can be 'yml' or 'json'.
+
+
+CodePipeline:
+-------------
+. It is a CD pipeline feature provided by AWS to visualize, model software release process.
+. It can orchestrate Build, Test and Deployment process.
+
+CodeBuild:
+----------
+. compiles code, runs tests and produce deploy ready artifacts.
+. We define build configuration in buildspec.yml (or) it can be provided inline
+. Build logs can be found in codebuild logs or cloudwatch
+. scales up and down - so no wait in queue
+
+CodeStar:
+---------
+. cloud based development service which provides tools for code, build and deploy.
+. Can integrate with Jira.
+. Codestar provide project dashboard like Jira, where we can check status of multiple tasks.
