@@ -1,0 +1,118 @@
+
+Elastic Beanstalk:
+------------------
+
+- It is a service for deploying & scaling web applications in many languages.
+
+- Dev's can focus on writing code and AWS provides infrastructure for code to run.
+
+- Elastic Beanstalk handles deployment, capacity, load balancing, auto scaling & application health.
+
+- pay for what we use
+
+- Elastic Beanstalk creates and S3 bucket for us initially to store our code
+
+- We will have full control of underlying aws resources.
+
+- can integrate with cloudwatch and X-RAY
+
+- deploys services that were developed with Java, .NET, PHP, Node.js, Python, Ruby, Go, and Docker, and it deploys them on familiar servers such as Apache, Nginx, Passenger, and IIS
+
+- ***** Updating Elastic Beanstalk: Elastic Beanstalk supports following processing deployments
+
+      - All at once
+           . Deploys new version to all instances environments simultaneously
+           . Instances will be out of service during deployment
+           . Outage occurs during deployment. Not suggestable for critical applications
+           . If update fails then roll back to previous version by re-deploying original versions.
+
+      - Rolling
+           . Deploys new version in batches
+           . Each batch of instances is taken offline while deployment takes place.
+           . Environment capacity will be decreased during rolling, as some instances will be offline.
+           . Not ideal for performance applications.
+           . If update fails, perform additional rolling update to roll back
+
+      - Rolling with additional batch
+           . Launches an additional batch of instances
+           . Deploys new version in bacthes
+           . Maintains full capacity during deployment process
+           . If update fails, perform additional rolling update to roll back
+
+      - Immutable
+           . Deploys new version to fresh group of instances created in a secondary auto scaling group.
+           . when new instances pass health checks, they will be moved to existing auto scaling group & old instances will be terminated.
+           . Maintains full capacity during deployment.
+           . Impact of failed update is less
+           . roll back process requires only terminating new auto scaling group.
+           . preferred option for critical applications.
+
+       - Blue/Green
+           . Deployment takes place in entirely separate environment.
+           . swap of CNAME's takes place after successful deployment from Blue (old) to Green (new).
+           . requires databse to run independently of elastic beanstalk.
+
+- Elastic Beanstalk Configuration:
+    . we can customize elastic beanstalk environments using elastic beanstalk configuration files. ( changes like run some scripts, add users/ELB)
+    . These files are written in YAML or JSON
+    . These files should have an extension ".config" and should be stored in folder called ".ebextensions"
+    . ".ebextensions" folder must be placed in top level directory of our source code directory.
+
+- RDS and Elastic Beanstalk:
+    . Elastic Beanstalk supports integrating with RDS in two ways:
+        - Launch RDS inside Beanstalk:
+                RDS instance is created by Elastic Beanstalk
+                RDS lifecycle will be dependent on beanstalk. If we terminate beanstalk environment, then RDS will also be terminated.
+                Suitable for Dev and test
+
+        - launch RDS outside of beanstlak (from RDS console):
+                RDS instance will be independent
+                able to connect to other applications
+                application terminate doesn't affect RDS.
+                additional security group should be added to beanstalk environment autoscaling group, to allow traffic to/from RDS
+                provide RDS connection information like password, endpoint and variables to beanstalk environment. 
+
+Notes:
+------
+AWS Elastic Beanstalk platforms are versioned using this pattern: MAJOR.MINOR.PATCH (e.g., 2.0.0). Each portion is incremented as follows:
+
+MAJOR version when there are incompatible changes.
+
+MINOR version when there is additional functionality added in a backward-compatible manner.
+
+PATCH version when there are backward-compatible bug fixes.
+
+*** If Elastic Bean stalk doesn't support our environmnet, then use "Packer" to create new ones per our requirements.
+
+*** Application Life Cycle Policy can be used to manage life cycles of applications.
+
+*** Cron.yml is used to deploy worker applications that process periodic tasks.
+
+AWS Elastic Beanstalk worker tier:
+---------------------------------
+
+- An environment tier whose web application runs background jobs is known as a worker tier
+- worker environment tier include an Auto Scaling group, one or more Amazon EC2 instances, and an IAM role.
+- Elastic Beanstalk installs a daemon on each EC2 instance in the Auto Scaling group to process SQS messages in the worker environment
+- Elastic Beanstalk worker environments support SQS dead letter queues, where worker can send messages that for some reason could not be successfully processed. 
+- Dead letter queue provides the ability to sideline, isolate and analyze the unsuccessfully processed messages
+
+
+FROM VIDEO:
+------------
+
+Architecture:
+
+     Applications -> under it will be multiple VERSIONS -> under it will be multiple ENVIRONMENTS (DEV/TEST/PROD).
+
+CLI Commands:
+
+  eb init : create elastic beanstalk app
+  eb create : create resources & launch app
+  eb deploy : deploy code
+  eb open : open app for deployments and after works.
+
+EBS Scaling:
+
+   - Trigger based : based on triggers of EBS
+   - Time based : cron
