@@ -229,3 +229,10 @@ Amazon Glue:
 ------------
   - It is a ETL ( extract, Transform and Load ) service used to prepare data for analysis.
   - serverless
+
+Amazon Datapipeline:
+-------------------
+  - Service to transfer data between computer services / storage services / on-premise
+  - access , transform and process data
+  - processed data can be stored in S3/ DynamoDB/ RDS/ EMR
+  - "Data Nodes" define the input and output resources for datasharing
