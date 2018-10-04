@@ -213,6 +213,10 @@ Cloud Front and Content Delivery Netwrok (CDN) :
 
 . We can also specify a path in bucket to be made available for CDN instead of complete bucket.
 
+. To restrict how long cache stays at cloudfront:
+   - specify a TTL at cloudfront cache
+   - configure origin to add cache control/expire header to each object
+
 
 ** Storage Gateway:
 
