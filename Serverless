@@ -75,6 +75,7 @@ Lambda:
   - abstracts some common points and helps in easy creation of templates.
   - a cloudformation template referencing to serverless is called SAM template.
   - SAM cli can be used in local to test lambda function in local using docker.
+  - create yaml file and upload package to S3 bucket.
 
 . Deploying serverless applications:
    - SAM
