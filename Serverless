@@ -151,6 +151,8 @@ API GATEWAY:
 
 . ** We can configure API GATEWAY as a SOAP webservice passthrough.
 
+. We have to use Mapping Template to convert data from json to xml or xml to json.
+
 . API Gateway endpoints are always https. Different types of endpoints:
       - Regional APIs are deployed in the current region. 
       - Edge Optimized APIs are deployed to the CloudFront network. 
