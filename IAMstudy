@@ -75,7 +75,7 @@ Policies are summarized in three tables: (when creating policies we follow these
 We cannot attach a resource-based policy to an IAM identity. That means policy created to a resource cannot be used to attach to users.
 Trust policies:  are resource-based policies that are attached to a role that define which principals can assume the role. When you create a role in IAM, the role must have two things: The first is a trust policy that indicates who can assume the role. The second is a permission policy that indicates what they can do with that role.
 
-
+** Changes to polcies are stored as versions and can used to revert back
 
 Users:
 ARN (Amazon resource Name) will be assigned to users created. They can be used to attach them in json policy files.
