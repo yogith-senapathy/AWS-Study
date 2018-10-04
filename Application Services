@@ -73,6 +73,7 @@ SNS Simple Notification Service:
 . Subscriptions can be http, https, SQS, Lambda, SMS and Email.
 . We can have multiple subscriptions to a topic.
 . When a topic is created a ARN is created.
+. We can assign "Filter Policies" to a topic, so that subsribers get only messages which are filtered.
 
 
 Elastic Transcoder:
