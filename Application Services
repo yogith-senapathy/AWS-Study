@@ -121,6 +121,7 @@ Kinesis:
             Analytics allows to run SQL queries for data stored in Kinesis Streams and Kinesis Firehose. Store that data in S3 and others.
             
       - Shards cannot guarantee the order of data, if it is being processed by multiple shards. order is possible only within a shard.
+      - Initial count of shards can be calculated using Incoming Write and Outgoing Read bandwidth.
 
 SES:
 ----
