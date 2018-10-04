@@ -220,3 +220,12 @@ AWS Systems Manager Parameters (SSM):
  500 - Internal Server Error
  501 - Not Implemented
  503 - Service Unavailable
+
+Amazon QuickInsight:
+--------------------
+  - It is a BI tool to run ad-hoc analysis and provide visualizations
+  
+Amazon Glue:
+------------
+  - It is a ETL ( extract, Transform and Load ) service used to prepare data for analysis.
+  - serverless
